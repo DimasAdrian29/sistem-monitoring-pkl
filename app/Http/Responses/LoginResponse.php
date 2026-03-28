@@ -2,22 +2,24 @@
 
 namespace App\Http\Responses;
 
-use Filament\Http\Responses\Auth\Contracts\LoginResponse as Responsable;
-use Illuminate\Support\Facades\Auth;
+use Filament\Http\Responses\Auth\Contracts\LoginResponse as LoginResponseContract;
+use Illuminate\Http\RedirectResponse;
+use Livewire\Features\SupportRedirects\Redirector;
 
-class LoginResponse implements Responsable
+class LoginResponse implements LoginResponseContract
 {
-    public function toResponse($request)
+    public function toResponse($request): RedirectResponse | Redirector
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        // Jika dia Admin, biarkan masuk ke dashboard Filament (/admin)
-        if ($user->role === 'admin') {
-            return redirect()->intended('/admin');
+        // Cek role dan arahkan ke path yang sesuai
+        if ($user->role === 'siswa') {
+            return redirect()->intended('/siswa');
+        } elseif ($user->role === 'guru_pembimbing' || $user->role === 'pembimbing_industri') {
+            return redirect()->intended('/pembimbing');
         }
 
-        // Jika Siswa atau Pembimbing, tendang keluar ke rute utama '/'
-        // agar diproses oleh RedirectController kamu
-        return redirect('/');
+        // Default redirect untuk role admin ke halaman dashboard Filament
+        return redirect()->intended('/admin');
     }
 }
