@@ -14,7 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Daftarkan alias middleware role di sini
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            // Tambahkan alias baru di sini
+            'cek.magang' => \App\Http\Middleware\CheckPengajuanMagang::class,
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

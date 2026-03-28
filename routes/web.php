@@ -21,30 +21,12 @@ Route::middleware(['auth'])->group(function () {
 
         return redirect('/admin/login');
     })->name('logout');
-    // ==========================================
+   // ==========================================
     // AREA KHUSUS SISWA
     // ==========================================
     Route::middleware(['role:siswa'])->group(function () {
-        Route::get('/siswa', function () {
-            return view('siswa.index');
-        });
-        Route::get('/siswa/absensi', function () {
-            return view('siswa.absensi');
-        });
-        Route::get('/siswa/absensi/form_absensi', function () {
-            return view('siswa.form_absensi');
-        });
-        Route::get('/siswa/jurnal_harian', function () {
-            return view('siswa.jurnal_harian');
-        });
-        Route::get('/siswa/jurnal_harian/form_jurnal_harian', function () {
-            return view('siswa.form_jurnal_harian');
-        });
-        Route::get('/siswa/forum_diskusi', function () {
-            return view('siswa.forum_diskusi');
-        });
 
-        // Asumsi: Pengajuan PKL dilakukan oleh Siswa
+        // 1. ROUTE PENGAJUAN (Tidak perlu dicek magangnya, karena justru ini tujuannya)
         Route::get('/pengajuan', function () {
             return view('pengajuan.index');
         });
@@ -57,6 +39,29 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pengajuan/peraturan_pkl', function () {
             return view('pengajuan.peraturan_pkl');
         });
+
+        // 2. ROUTE DASHBOARD SISWA (Hanya bisa diakses jika sudah ada di tabel PKL)
+        Route::middleware(['cek.magang'])->group(function () {
+            Route::get('/siswa', function () {
+                return view('siswa.index');
+            });
+            Route::get('/siswa/absensi', function () {
+                return view('siswa.absensi');
+            });
+            Route::get('/siswa/absensi/form_absensi', function () {
+                return view('siswa.form_absensi');
+            });
+            Route::get('/siswa/jurnal_harian', function () {
+                return view('siswa.jurnal_harian');
+            });
+            Route::get('/siswa/jurnal_harian/form_jurnal_harian', function () {
+                return view('siswa.form_jurnal_harian');
+            });
+            Route::get('/siswa/forum_diskusi', function () {
+                return view('siswa.forum_diskusi');
+            });
+        });
+
     });
 
     // ==========================================
