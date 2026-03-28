@@ -61,6 +61,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                // TAMBAHKAN MIDDLEWARE BARU KITA DI SINI
+                \App\Http\Middleware\AdminPanelAccessMiddleware::class,
             ]);
     }
 }
