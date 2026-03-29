@@ -1,8 +1,9 @@
 <?php
-
+use App\Http\Controllers\PengajuanController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Pastikan ini di-import jika belum ada
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request; // Pastikan ini di-import jika belum ada
-use Illuminate\Support\Facades\Auth;
+
 // Redirect root ke login filament
 Route::get('/', function () {
     return redirect('/admin/login');
@@ -21,21 +22,26 @@ Route::middleware(['auth'])->group(function () {
 
         return redirect('/admin/login');
     })->name('logout');
-   // ==========================================
+    // ==========================================
     // AREA KHUSUS SISWA
     // ==========================================
     Route::middleware(['role:siswa'])->group(function () {
 
         // 1. ROUTE PENGAJUAN (Tidak perlu dicek magangnya, karena justru ini tujuannya)
+        // Di dalam routes/web.php
+
         Route::get('/pengajuan', function () {
-            return view('pengajuan.index');
+            // Mencari data siswa berdasarkan user yang sedang login
+            $siswa = \App\Models\Siswa::where('user_id', auth()->id())->first();
+
+            return view('pengajuan.index', [
+                'siswa' => $siswa,
+            ]);
         });
-        Route::get('/pengajuan/form_pengajuan', function () {
-            return view('pengajuan.form_pengajuan');
-        });
-        Route::get('/pengajuan/informasi_pkl', function () {
-            return view('pengajuan.informasi_pkl');
-        });
+        Route::get('/pengajuan/form_pengajuan', [PengajuanController::class, 'index']);
+        Route::post('/pengajuan/store', [PengajuanController::class, 'store'])->name('pengajuan.store');
+        Route::delete('/pengajuan/reset', [PengajuanController::class, 'reset'])->name('pengajuan.reset');
+        Route::get('/pengajuan/informasi_pkl', [App\Http\Controllers\PengajuanController::class, 'informasi']);
         Route::get('/pengajuan/peraturan_pkl', function () {
             return view('pengajuan.peraturan_pkl');
         });
