@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // Pastikan ini di-import jika belum ada
 use Illuminate\Support\Facades\Route;
@@ -41,28 +42,27 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pengajuan/form_pengajuan', [PengajuanController::class, 'index']);
         Route::post('/pengajuan/store', [PengajuanController::class, 'store'])->name('pengajuan.store');
         Route::delete('/pengajuan/reset', [PengajuanController::class, 'reset'])->name('pengajuan.reset');
-        Route::get('/pengajuan/informasi_pkl', [App\Http\Controllers\PengajuanController::class, 'informasi']);
+        Route::get('/pengajuan/informasi_pkl', function () {
+            return view('pengajuan.informasi_pkl');
+        });
         Route::get('/pengajuan/peraturan_pkl', function () {
             return view('pengajuan.peraturan_pkl');
         });
 
         // 2. ROUTE DASHBOARD SISWA (Hanya bisa diakses jika sudah ada di tabel PKL)
         Route::middleware(['cek.magang'])->group(function () {
-            Route::get('/siswa', function () {
-                return view('siswa.index');
-            });
+            // Gunakan Controller lagi
+            Route::get('/siswa', [App\Http\Controllers\SiswaController::class, 'index']);
             Route::get('/siswa/absensi', function () {
                 return view('siswa.absensi');
             });
             Route::get('/siswa/absensi/form_absensi', function () {
                 return view('siswa.form_absensi');
             });
-            Route::get('/siswa/jurnal_harian', function () {
-                return view('siswa.jurnal_harian');
-            });
-            Route::get('/siswa/jurnal_harian/form_jurnal_harian', function () {
-                return view('siswa.form_jurnal_harian');
-            });
+            // Di dalam middleware cek.magang
+            Route::get('/siswa/jurnal_harian', [SiswaController::class, 'jurnalIndex']);
+            Route::get('/siswa/jurnal_harian/form_jurnal_harian', [SiswaController::class, 'jurnalCreate']);
+            Route::post('/siswa/jurnal_harian/store', [SiswaController::class, 'jurnalStore'])->name('siswa.jurnal.store');
             Route::get('/siswa/forum_diskusi', function () {
                 return view('siswa.forum_diskusi');
             });

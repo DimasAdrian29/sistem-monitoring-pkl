@@ -57,11 +57,6 @@ class AbsensiResource extends Resource
 
                 Forms\Components\Section::make('Bukti & Validasi')
                     ->schema([
-                        Forms\Components\FileUpload::make('foto')
-                            ->image()
-                            ->directory('absensi')
-                            ->imageEditor()
-                            ->required(),
                         Forms\Components\Select::make('status_validasi')
                             ->options([
                                 'Menunggu'  => 'Menunggu',
@@ -87,8 +82,6 @@ class AbsensiResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('jam_masuk')->time(),
                 Tables\Columns\TextColumn::make('jam_pulang')->time(),
-                Tables\Columns\ImageColumn::make('foto')
-                    ->circular(),
                 Tables\Columns\BadgeColumn::make('status_validasi')
                     ->colors([
                         'warning' => 'Menunggu',

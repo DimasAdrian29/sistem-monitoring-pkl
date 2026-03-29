@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Middleware;
 
+use App\Models\PraktekKerjaLapangan;
+use App\Models\Siswa;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Siswa;
-use App\Models\PraktekKerjaLapangan;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckPengajuanMagang
 {
@@ -15,23 +14,24 @@ class CheckPengajuanMagang
     {
         $user = Auth::user();
 
-        // Pastikan ini hanya berlaku untuk role siswa
         if ($user && $user->role === 'siswa') {
+            // 1. CEK: Jika sedang mengakses halaman pengajuan, JANGAN jalankan middleware ini
+            // Agar tidak terjadi tabrakan logika
+            if ($request->is('pengajuan*')) {
+                return $next($request);
+            }
 
-            // ASUMSI: Tabel users berelasi dengan tabel siswas melalui kolom user_id
             $siswa = Siswa::where('user_id', $user->id)->first();
 
             if ($siswa) {
-                // Cek apakah id siswa ini ada di tabel praktek_kerja_lapangans
+                // 2. CEK: Apakah id siswa ini ada di tabel praktek_kerja_lapangans?
                 $sudahMagang = PraktekKerjaLapangan::where('siswa_id', $siswa->id)->exists();
 
-                if (!$sudahMagang) {
-                    // Jika belum ada data magang, paksa ke halaman pengajuan
+                if (! $sudahMagang) {
                     return redirect('/pengajuan');
                 }
             } else {
-                // Jika data profil siswa di tabel 'siswas' belum ada sama sekali
-                // Lemparkan juga ke pengajuan (atau halaman lengkapi profil jika ada)
+                // Jika data profil siswa saja belum ada
                 return redirect('/pengajuan');
             }
         }
