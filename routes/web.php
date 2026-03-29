@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Http\Request;
@@ -53,12 +54,10 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['cek.magang'])->group(function () {
             // Gunakan Controller lagi
             Route::get('/siswa', [App\Http\Controllers\SiswaController::class, 'index']);
-            Route::get('/siswa/absensi', function () {
-                return view('siswa.absensi');
-            });
-            Route::get('/siswa/absensi/form_absensi', function () {
-                return view('siswa.form_absensi');
-            });
+            // Memanggil class AbsensiController dan jalankan fungsi index di dalamnya
+            Route::get('/siswa/absensi', [AbsensiController::class, 'index']);
+            // MENJADI:
+            Route::get('/siswa/absensi/form_absensi', [App\Http\Controllers\AbsensiController::class, 'formAbsensi']);
             // Di dalam middleware cek.magang
             Route::get('/siswa/jurnal_harian', [SiswaController::class, 'jurnalIndex']);
             Route::get('/siswa/jurnal_harian/form_jurnal_harian', [SiswaController::class, 'jurnalCreate']);
