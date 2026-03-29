@@ -21,10 +21,10 @@ services:
     container_name: laravel-db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_DATABASE: laravel_db
+      MYSQL_USER: user_laravel
+      MYSQL_PASSWORD: password_rahasia
+      MYSQL_ROOT_PASSWORD: root_password_rahasia
     volumes:
       - ./docker-compose/mysql:/var/lib/mysql
     networks:
