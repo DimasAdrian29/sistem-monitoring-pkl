@@ -1,7 +1,6 @@
 version: '3.8'
 services:
 
-  # PHP Service
   app:
     build:
       context: .
@@ -15,7 +14,6 @@ services:
     networks:
       - laravel-network
 
-  # MySQL Service
   db:
     image: mysql:8.0
     container_name: laravel-db
@@ -30,7 +28,6 @@ services:
     networks:
       - laravel-network
 
-  # Nginx Service
   nginx:
     image: nginx:alpine
     container_name: laravel-nginx
@@ -42,17 +39,6 @@ services:
       - ./docker-compose/nginx:/etc/nginx/conf.d/
     networks:
       - laravel-network
-
-  # Cloudflare Tunnel Service
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflare-tunnel
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run --token YOUR_CLOUDFLARE_TUNNEL_TOKEN
-    networks:
-      - laravel-network
-    depends_on:
-      - nginx
 
 networks:
   laravel-network:
