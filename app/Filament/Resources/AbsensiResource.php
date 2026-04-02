@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AbsensiResource\Pages;
@@ -57,6 +58,13 @@ class AbsensiResource extends Resource
 
                 Forms\Components\Section::make('Bukti & Validasi')
                     ->schema([
+                        // Penambahan Field Foto (Opsional)
+                        Forms\Components\FileUpload::make('foto')
+                            ->label('Foto Bukti Absensi')
+                            ->image() // Hanya menerima file gambar
+                            ->directory('absensi-foto') // Folder penyimpanan di storage/app/public
+                            ->columnSpanFull(), // Agar tampilan lebih lebar
+
                         Forms\Components\Select::make('status_validasi')
                             ->options([
                                 'Menunggu'  => 'Menunggu',
@@ -72,6 +80,12 @@ class AbsensiResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('praktek_kerja_lapangan.siswa.nama')->label('Siswa')->searchable(),
+
+                // Menampilkan Foto di Tabel
+                Tables\Columns\ImageColumn::make('foto')
+                    ->label('Foto')
+                    ->circular(), // Membuat foto berbentuk lingkaran
+
                 Tables\Columns\TextColumn::make('tanggal')->date()->sortable(),
                 Tables\Columns\TextColumn::make('status_kehadiran')->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -82,12 +96,14 @@ class AbsensiResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('jam_masuk')->time(),
                 Tables\Columns\TextColumn::make('jam_pulang')->time(),
-                Tables\Columns\BadgeColumn::make('status_validasi')
-                    ->colors([
-                        'warning' => 'Menunggu',
-                        'success' => 'Disetujui',
-                        'danger'  => 'Ditolak',
-                    ]),
+                Tables\Columns\TextColumn::make('status_validasi') // Menggunakan TextColumn dengan badge() karena BadgeColumn sudah deprecated di versi terbaru
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Menunggu' => 'warning',
+                        'Disetujui' => 'success',
+                        'Ditolak' => 'danger',
+                        default => 'gray',
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

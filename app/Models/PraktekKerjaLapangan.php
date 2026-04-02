@@ -42,4 +42,10 @@ class PraktekKerjaLapangan extends Model
     {
         return $this->belongsTo(PembimbingIndustri::class);
     }
+
+    // Relasi ke Absensi (Tambahan baru untuk memperbaiki error)
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
+    }
 }

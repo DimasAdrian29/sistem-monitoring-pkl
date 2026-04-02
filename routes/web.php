@@ -79,12 +79,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembimbing/input_nilai/form_nilai', function () {
             return view('pembimbing.form_nilai');
         });
-        Route::get('/pembimbing/monitoring_absensi', function () {
-            return view('pembimbing.monitoring_absensi');
-        });
-        Route::get('/pembimbing/monitoring_absensi/detail_siswa', function () {
-            return view('pembimbing.detail_absensi_siswa');
-        });
+        Route::get('/pembimbing/monitoring_absensi', [App\Http\Controllers\MonitoringAbsensiController::class, 'index']);
+        Route::post('/pembimbing/monitoring_absensi/validasi/{id}', [App\Http\Controllers\MonitoringAbsensiController::class, 'validasiIzin']);
+        Route::get('/pembimbing/monitoring_absensi/detail_siswa/{id}', [App\Http\Controllers\MonitoringAbsensiController::class, 'detailSiswa']);
         Route::get('/pembimbing/monitoring_jurnal_harian', function () {
             return view('pembimbing.monitoring_jurnal_harian');
         });
