@@ -62,9 +62,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/siswa/jurnal_harian', [SiswaController::class, 'jurnalIndex']);
             Route::get('/siswa/jurnal_harian/form_jurnal_harian', [SiswaController::class, 'jurnalCreate']);
             Route::post('/siswa/jurnal_harian/store', [SiswaController::class, 'jurnalStore'])->name('siswa.jurnal.store');
-            Route::get('/siswa/forum_diskusi', function () {
-                return view('siswa.forum_diskusi');
-            });
+            Route::get('/siswa/forum_diskusi', [App\Http\Controllers\ForumController::class, 'indexSiswa']);
         });
 
     });
@@ -76,9 +74,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembimbing', function () {
             return view('pembimbing.index');
         });
-        Route::get('/pembimbing/forum_diskusi', function () {
-            return view('pembimbing.forum_diskusi');
-        });
+        Route::get('/pembimbing/forum_diskusi', [App\Http\Controllers\ForumController::class, 'indexPembimbing']);
         Route::get('/pembimbing/input_nilai', function () {
             return view('pembimbing.input_nilai');
         });

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ForumChatResource\Pages;
@@ -13,7 +14,8 @@ class ForumChatResource extends Resource
 {
     protected static ?string $model = ForumChat::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // Sedikit ubah ikon agar lebih pas untuk menu chat/forum
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
 
     public static function form(Form $form): Form
     {
@@ -21,10 +23,9 @@ class ForumChatResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Kirim Pesan (Admin Mode)')
                     ->schema([
-                        Forms\Components\Select::make('praktek_kerja_lapangan_id')
-                            ->relationship('praktek_kerja_lapangan', 'id')
-                            ->getOptionLabelFromRecordUsing(fn($record) => "Grup: {$record->siswa->nama} (di {$record->industri->nama})")
-                            ->label('Pilih Ruang Chat (Data PKL)')
+                        Forms\Components\Select::make('industri_id')
+                            ->relationship('industri', 'nama') // Membaca langsung ke tabel industris
+                            ->label('Pilih Grup (Tempat Industri)')
                             ->searchable()
                             ->preload()
                             ->required(),
@@ -47,10 +48,10 @@ class ForumChatResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('praktek_kerja_lapangan.siswa.nama')
-                    ->label('Grup Siswa')
-                    ->description(fn($record) => 'Industri: ' . $record->praktek_kerja_lapangan->industri->nama)
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('industri.nama')
+                    ->label('Grup Industri')
+                    ->searchable()
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('user.username')
                     ->label('Pengirim')

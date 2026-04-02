@@ -10,16 +10,18 @@ class ForumChat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'praktek_kerja_lapangan_id',
+        'industri_id', // Menggunakan ID Industri sebagai ruang grup
         'user_id',
         'isi_pesan',
     ];
 
-    public function praktek_kerja_lapangan()
+    // Relasi ke tabel Industri (Grup)
+    public function industri()
     {
-        return $this->belongsTo(PraktekKerjaLapangan::class);
+        return $this->belongsTo(Industri::class);
     }
 
+    // Relasi ke pengirim pesan
     public function user()
     {
         return $this->belongsTo(User::class);

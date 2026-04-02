@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('forum_chats', function (Blueprint $table) {
             $table->id();
-            // Menghubungkan ke sesi PKL tertentu
-            $table->foreignId('praktek_kerja_lapangan_id')->constrained('praktek_kerja_lapangans')->cascadeOnDelete();
-            // Siapa yang mengirim pesan (Siswa/Guru/Pembimbing Industri)
+
+            // UBAH DI SINI: Sekarang terhubung langsung ke tempat industrinya (Grup Besar)
+            $table->foreignId('industri_id')->constrained('industris')->cascadeOnDelete();
+
+            // Siapa yang mengirim pesan (Siswa / Guru / Mentor)
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
 
             $table->text('isi_pesan');
