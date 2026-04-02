@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,5 +46,10 @@ class PraktekKerjaLapangan extends Model
     public function absensis()
     {
         return $this->hasMany(Absensi::class);
+    }
+    // app/Models/PraktekKerjaLapangan.php
+    public function logbooks()
+    {
+        return $this->hasMany(Logbook::class);
     }
 }

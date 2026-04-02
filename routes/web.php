@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\MonitoringJurnalController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Http\Request;
@@ -82,12 +83,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembimbing/monitoring_absensi', [App\Http\Controllers\MonitoringAbsensiController::class, 'index']);
         Route::post('/pembimbing/monitoring_absensi/validasi/{id}', [App\Http\Controllers\MonitoringAbsensiController::class, 'validasiIzin']);
         Route::get('/pembimbing/monitoring_absensi/detail_siswa/{id}', [App\Http\Controllers\MonitoringAbsensiController::class, 'detailSiswa']);
-        Route::get('/pembimbing/monitoring_jurnal_harian', function () {
-            return view('pembimbing.monitoring_jurnal_harian');
-        });
-        Route::get('/pembimbing/monitoring_jurnal_harian/detail', function () {
-            return view('pembimbing.detail_jurnal_harian_siswa');
-        });
+        Route::get('/pembimbing/monitoring_jurnal_harian', [MonitoringJurnalController::class, 'index']);
+        Route::get('/pembimbing/monitoring_jurnal_harian/detail/{id}', [MonitoringJurnalController::class, 'detail']);
+        Route::post('/pembimbing/monitoring_jurnal_harian/approve/{id}', [MonitoringJurnalController::class, 'approve']);
     });
 
 });
