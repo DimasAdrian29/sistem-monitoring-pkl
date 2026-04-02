@@ -71,9 +71,7 @@ Route::middleware(['auth'])->group(function () {
     // AREA KHUSUS PEMBIMBING (Guru & Industri)
     // ==========================================
     Route::middleware(['role:guru_pembimbing,pembimbing_industri'])->group(function () {
-        Route::get('/pembimbing', function () {
-            return view('pembimbing.index');
-        });
+        Route::get('/pembimbing', [App\Http\Controllers\PembimbingController::class, 'index']);
         Route::get('/pembimbing/forum_diskusi', [App\Http\Controllers\ForumController::class, 'indexPembimbing']);
         Route::get('/pembimbing/input_nilai', function () {
             return view('pembimbing.input_nilai');
