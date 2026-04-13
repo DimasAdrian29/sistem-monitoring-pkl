@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Models;
 
-use Filament\Models\Contracts\HasName;
-use Filament\Models\Contracts\FilamentUser; // 1. TAMBAHKAN IMPORT INI
-use Filament\Panel;                         // 2. TAMBAHKAN IMPORT INI
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName; // 1. TAMBAHKAN IMPORT INI
+use Filament\Panel;                    // 2. TAMBAHKAN IMPORT INI
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -43,5 +42,15 @@ class User extends Authenticatable implements HasName, FilamentUser
     {
         // Hanya user dengan role 'admin' yang bisa mengakses Filament Panel
         return true;
+    }
+    public function hasRole($role)
+    {
+        // Jika parameter berupa array, cek apakah role user ada di dalam array tersebut
+        if (is_array($role)) {
+            return in_array($this->role, $role);
+        }
+
+        // Jika string, cocokkan langsung
+        return $this->role === $role;
     }
 }

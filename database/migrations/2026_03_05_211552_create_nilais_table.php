@@ -15,14 +15,25 @@ return new class extends Migration
             $table->id();
             // Relasi ke PKL (untuk tahu siswa mana yang dinilai)
             $table->foreignId('praktek_kerja_lapangan_id')->constrained('praktek_kerja_lapangans')->cascadeOnDelete();
-            // Relasi ke Pembimbing Industri (untuk tahu siapa yang memberi nilai)
-            $table->foreignId('pembimbing_industri_id')->constrained('pembimbing_industris')->cascadeOnDelete();
 
-            $table->integer('disiplin');
-            $table->integer('tanggung_jawab');
-            $table->integer('kompetensi_teknis');
-            $table->decimal('nilai_akhir', 5, 2);
-            $table->text('catatan_pembimbing')->nullable();
+            // Relasi Opsional jika ingin merekam spesifik siapa penginputnya
+            $table->foreignId('pembimbing_industri_id')->nullable()->constrained('pembimbing_industris')->cascadeOnDelete();
+            $table->foreignId('guru_pembimbing_id')->nullable()->constrained('guru_pembimbings')->cascadeOnDelete();
+
+            // ==========================================
+            // TAMBAHKAN ->nullable() DI SINI
+            // ==========================================
+            $table->integer('aspek_soft_skills')->nullable()->comment('Menerapkan Soft skills yang dibutuhkan dunia kerja');
+            $table->integer('aspek_norma_k3lh')->nullable()->comment('Menerapkan norma, POS dan K3LH');
+            $table->integer('aspek_kompetensi_teknis')->nullable()->comment('Menerapkan kompetensi teknis');
+            $table->integer('aspek_wawasan_bisnis')->nullable()->comment('Memahami alur bisnis dan wawasan wirausaha');
+            $table->integer('aspek_penyusunan_laporan')->nullable()->comment('Menyusun laporan PKL');
+            $table->integer('aspek_presentasi')->nullable()->comment('Mempresentasikan hasil pelaksanaan PKL');
+
+            // Catatan
+            $table->text('catatan_pembimbing_industri')->nullable();
+            $table->text('catatan_guru_pembimbing')->nullable();
+
             $table->timestamps();
         });
     }

@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\MonitoringJurnalController;
+use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Http\Request;
@@ -74,12 +75,10 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:guru_pembimbing,pembimbing_industri'])->group(function () {
         Route::get('/pembimbing', [App\Http\Controllers\PembimbingController::class, 'index']);
         Route::get('/pembimbing/forum_diskusi', [App\Http\Controllers\ForumController::class, 'indexPembimbing']);
-        Route::get('/pembimbing/input_nilai', function () {
-            return view('pembimbing.input_nilai');
-        });
-        Route::get('/pembimbing/input_nilai/form_nilai', function () {
-            return view('pembimbing.form_nilai');
-        });
+        // UBAH ROUTE NILAI MENJADI SEPERTI INI:
+        Route::get('/pembimbing/input_nilai', [NilaiController::class, 'index']);
+        Route::get('/pembimbing/input_nilai/form_nilai/{id}', [NilaiController::class, 'edit']);
+        Route::post('/pembimbing/input_nilai/store/{id}', [NilaiController::class, 'store'])->name('pembimbing.nilai.store');
         Route::get('/pembimbing/monitoring_absensi', [App\Http\Controllers\MonitoringAbsensiController::class, 'index']);
         Route::post('/pembimbing/monitoring_absensi/validasi/{id}', [App\Http\Controllers\MonitoringAbsensiController::class, 'validasiIzin']);
         Route::get('/pembimbing/monitoring_absensi/detail_siswa/{id}', [App\Http\Controllers\MonitoringAbsensiController::class, 'detailSiswa']);

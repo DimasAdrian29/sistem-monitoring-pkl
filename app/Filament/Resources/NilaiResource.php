@@ -15,7 +15,7 @@ class NilaiResource extends Resource
 {
     protected static ?string $model = Nilai::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-star'; // Mengganti icon agar lebih relevan dengan 'Nilai'
+    protected static ?string $navigationIcon = 'heroicon-o-star';
 
     protected static ?string $navigationLabel = 'Penilaian PKL';
 
@@ -29,73 +29,74 @@ class NilaiResource extends Resource
                             ->relationship(
                                 name: 'praktek_kerja_lapangan',
                                 titleAttribute: 'id',
-                                // Memastikan data siswa dan industri ikut terambil agar nama muncul
                                 modifyQueryUsing: fn (Builder $query) => $query->with(['siswa', 'industri'])
                             )
                             ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->siswa->nama} (di {$record->industri->nama})")
                             ->label('Data PKL Siswa')
                             ->searchable()
-                            ->preload() // Memperbaiki daftar agar muncul saat diklik
+                            ->preload()
                             ->required(),
 
+                        // Asumsi penginput bisa memilih siapa pembimbing industri & guru pembimbing yang menilai
                         Forms\Components\Select::make('pembimbing_industri_id')
                             ->relationship('pembimbing_industri', 'nama')
                             ->label('Pembimbing Industri')
                             ->searchable()
-                            ->preload() // Memperbaiki daftar agar muncul saat diklik
-                            ->required(),
+                            ->preload(),
+
+                        Forms\Components\Select::make('guru_pembimbing_id')
+                            ->relationship('guru_pembimbing', 'nama')
+                            ->label('Guru Pembimbing')
+                            ->searchable()
+                            ->preload(),
+                    ])->columns(3),
+
+                Forms\Components\Section::make('Input Nilai Aspek (0-100)')
+                    ->schema([
+                        Forms\Components\TextInput::make('aspek_soft_skills')
+                            ->label('1. Soft Skills')
+                            ->helperText('Menerapkan Soft skills yang dibutuhkan dunia kerja')
+                            ->numeric()->minValue(0)->maxValue(100)->required(),
+
+                        Forms\Components\TextInput::make('aspek_norma_k3lh')
+                            ->label('2. Norma, POS & K3LH')
+                            ->helperText('Menerapkan norma, POS dan K3LH di tempat PKL')
+                            ->numeric()->minValue(0)->maxValue(100)->required(),
+
+                        Forms\Components\TextInput::make('aspek_kompetensi_teknis')
+                            ->label('3. Kompetensi Teknis')
+                            ->helperText('Menerapkan kompetensi teknis dari sekolah/dunia kerja')
+                            ->numeric()->minValue(0)->maxValue(100)->required(),
+
+                        Forms\Components\TextInput::make('aspek_wawasan_bisnis')
+                            ->label('4. Wawasan Bisnis & Wirausaha')
+                            ->helperText('Memahami alur bisnis dunia kerja dan wawasan wirausaha')
+                            ->numeric()->minValue(0)->maxValue(100)->required(),
+
+                        Forms\Components\TextInput::make('aspek_penyusunan_laporan')
+                            ->label('5. Penyusunan Laporan')
+                            ->helperText('Menyusun laporan PKL sesuai kaidah penulisan ilmiah')
+                            ->numeric()->minValue(0)->maxValue(100)->required(),
+
+                        Forms\Components\TextInput::make('aspek_presentasi')
+                            ->label('6. Presentasi Hasil')
+                            ->helperText('Mempresentasikan hasil PKL & capaian kompetensi')
+                            ->numeric()->minValue(0)->maxValue(100)->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Input Nilai (0-100)')
+                Forms\Components\Section::make('Catatan Pembimbing')
                     ->schema([
-                        Forms\Components\TextInput::make('disiplin')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100)
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Forms\Set $set, Forms\Get $get) => self::updateNilaiAkhir($set, $get)),
+                        Forms\Components\Textarea::make('catatan_pembimbing_industri')
+                            ->label('Catatan dari Pembimbing Industri')
+                            ->placeholder('Masukkan evaluasi dari pihak industri...')
+                            ->columnSpanFull(),
 
-                        Forms\Components\TextInput::make('tanggung_jawab')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100)
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Forms\Set $set, Forms\Get $get) => self::updateNilaiAkhir($set, $get)),
-
-                        Forms\Components\TextInput::make('kompetensi_teknis')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100)
-                            ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Forms\Set $set, Forms\Get $get) => self::updateNilaiAkhir($set, $get)),
-
-                        Forms\Components\TextInput::make('nilai_akhir')
-                            ->label('Nilai Akhir (Rata-rata)')
-                            ->numeric()
-                            ->readOnly()
-                            ->required(),
-                    ])->columns(4),
-
-                Forms\Components\Textarea::make('catatan_pembimbing')
-                    ->placeholder('Contoh: Siswa sangat proaktif dalam mengerjakan tugas...')
-                    ->columnSpanFull(),
+                        Forms\Components\Textarea::make('catatan_guru_pembimbing')
+                            ->label('Catatan dari Guru Pembimbing')
+                            ->placeholder('Masukkan evaluasi dari guru sekolah...')
+                            ->columnSpanFull(),
+                    ]),
             ]);
-    }
-
-    // Fungsi Logika Hitung Rata-rata
-    public static function updateNilaiAkhir(Forms\Set $set, Forms\Get $get): void
-    {
-        $disiplin = (float) ($get('disiplin') ?? 0);
-        $tanggungJawab = (float) ($get('tanggung_jawab') ?? 0);
-        $kompetensi = (float) ($get('kompetensi_teknis') ?? 0);
-
-        $rataRata = ($disiplin + $tanggungJawab + $kompetensi) / 3;
-
-        // Menggunakan format angka yang bisa dibaca sebagai numeric oleh database
-        $set('nilai_akhir', round($rataRata, 2));
     }
 
     public static function table(Table $table): Table
@@ -109,11 +110,18 @@ class NilaiResource extends Resource
                 Tables\Columns\TextColumn::make('praktek_kerja_lapangan.industri.nama')
                     ->label('Industri')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('nilai_akhir')
-                    ->label('Rata-rata')
-                    ->badge()
-                    ->color(fn ($state) => $state >= 75 ? 'success' : 'danger')
+
+                // Menampilkan salah satu nilai aspek sebagai indikator di tabel, sisanya disembunyikan (toggleable)
+                Tables\Columns\TextColumn::make('aspek_kompetensi_teknis')
+                    ->label('Nilai Teknis')
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('aspek_soft_skills')->label('Soft Skills')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('aspek_norma_k3lh')->label('K3LH')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('aspek_wawasan_bisnis')->label('Bisnis')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('aspek_penyusunan_laporan')->label('Laporan')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('aspek_presentasi')->label('Presentasi')->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Tanggal Input')
                     ->dateTime()

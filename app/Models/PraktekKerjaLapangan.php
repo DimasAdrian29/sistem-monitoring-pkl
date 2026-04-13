@@ -52,4 +52,10 @@ class PraktekKerjaLapangan extends Model
     {
         return $this->hasMany(Logbook::class);
     }
+    // Relasi ke tabel Nilai (One to One)
+    // ==========================================
+    public function nilai()
+    {
+        return $this->hasOne(Nilai::class);
+    }
 }
