@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\AktivitasController;
 use App\Http\Controllers\MonitoringJurnalController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\PengajuanController;
@@ -34,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::get('/aktivitas', [AktivitasController::class, 'index'])->name('aktivitas.index');
     // ==========================================
     // AREA KHUSUS SISWA
     // ==========================================
