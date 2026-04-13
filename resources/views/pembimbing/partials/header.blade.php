@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md px-4 py-4 border-b border-slate-100 dark:border-gray-700 justify-between">
+<header class="sticky top-0 z-[100] flex items-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-md px-4 py-4 border-b border-slate-100 dark:border-gray-700 justify-between">
     <div class="flex items-center gap-3">
         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-gray-700 shadow-sm border border-slate-100 dark:border-gray-600 overflow-hidden">
             <img src="{{ asset('images/logo_sekolah.png') }}"
@@ -17,10 +17,12 @@
             <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">person</span>
         </button>
 
-        <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-gray-700 shadow-xl border border-slate-100 dark:border-gray-600 py-2 z-[60]">
-            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-gray-600">
+        <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 rounded-2xl bg-white dark:bg-gray-700 shadow-xl border border-slate-100 dark:border-gray-600 py-2 z-[110]">
+
+            <a href="{{ route('profile.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-gray-600">
                 <span class="material-symbols-outlined text-sm">account_circle</span> Profil Saya
             </a>
+
             <hr class="my-1 border-slate-100 dark:border-gray-600">
             <form method="POST" action="/logout">
                 @csrf

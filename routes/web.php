@@ -3,6 +3,7 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\MonitoringJurnalController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\PengajuanController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\SiswaNilaiController;
 use Illuminate\Http\Request;
@@ -27,6 +28,12 @@ Route::middleware(['auth'])->group(function () {
 
         return redirect('/admin/login');
     })->name('logout');
+
+    // ROUTE GLOBAL: PROFIL USER (Semua Role Bisa Akses)
+    // ==========================================
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     // ==========================================
     // AREA KHUSUS SISWA
     // ==========================================
