@@ -66,6 +66,15 @@
                     <p class="text-slate-500 dark:text-slate-400 text-[11px] mt-1 leading-tight">Konsultasi dengan pembimbing</p>
                 </div>
             </a>
+            <a href="{{ url('/siswa/nilai') }}" class="group flex flex-col items-start gap-3 rounded-2xl bg-white dark:bg-gray-700/50 p-4 transition-all hover:ring-2 hover:ring-primary/20 border border-slate-100 dark:border-gray-700 shadow-sm">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 dark:bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                    <span class="material-symbols-outlined text-2xl">workspace_premium</span>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm font-bold">Lihat Nilai</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-[11px] mt-1 leading-tight">Cek hasil evaluasi magang</p>
+                </div>
+            </a>
 
 
         </div>

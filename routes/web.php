@@ -4,6 +4,7 @@ use App\Http\Controllers\MonitoringJurnalController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\SiswaNilaiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // Pastikan ini di-import jika belum ada
 use Illuminate\Support\Facades\Route;
@@ -65,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/siswa/jurnal_harian/form_jurnal_harian', [SiswaController::class, 'jurnalCreate']);
             Route::post('/siswa/jurnal_harian/store', [SiswaController::class, 'jurnalStore'])->name('siswa.jurnal.store');
             Route::get('/siswa/forum_diskusi', [App\Http\Controllers\ForumController::class, 'indexSiswa']);
+            // TAMBAHAN ROUTE NILAI SISWA
+            Route::get('/siswa/nilai', [SiswaNilaiController::class, 'index']);
         });
 
     });
