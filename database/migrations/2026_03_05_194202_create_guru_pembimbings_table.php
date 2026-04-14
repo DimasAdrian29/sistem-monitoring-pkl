@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nip')->unique(); // Digunakan juga sebagai Username & Password
             $table->string('jenis_kelamin');
-            $table->string('agama');
-            $table->text('alamat');
+            $table->string('agama')->nullable();
+            $table->text('alamat')->nullable();
             $table->string('jurusan');
-            $table->string('nomor_telepon');
+            $table->string('nomor_telepon')->nullable();
             $table->timestamps();
         });
     }

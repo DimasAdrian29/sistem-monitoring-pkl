@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nisn')->unique(); // Digunakan juga sebagai NIK/Username
             $table->string('jenis_kelamin');
-            $table->string('agama');
-            $table->text('alamat');
+            $table->string('agama')->nullable();
+            $table->text('alamat')->nullable();
             $table->string('kelas');
             $table->string('jurusan');
-            $table->string('nomor_telepon');
-            $table->string('nomor_telepon_wali');
+            $table->string('nomor_telepon')->nullable();
+            $table->string('nomor_telepon_wali')->nullable();
             $table->timestamps();
         });
     }

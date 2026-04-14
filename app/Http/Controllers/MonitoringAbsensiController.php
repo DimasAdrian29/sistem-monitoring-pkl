@@ -46,7 +46,7 @@ class MonitoringAbsensiController extends Controller
             ->whereDate('tanggal', $today)
             ->where('status_kehadiran', 'Hadir')
             ->where('status_validasi', 'Menunggu')
-            ->update(['status_validasi' => 'Diterima']);
+            ->update(['status_validasi' => 'Disetujui']);
 
         // Refresh data absensi setelah auto-validasi
         // (Agar data yang dikirim ke view sudah berstatus 'Diterima')

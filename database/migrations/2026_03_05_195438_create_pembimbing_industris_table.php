@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('nama');
             $table->string('jabatan');
             $table->string('jenis_kelamin');
-            $table->string('agama');
-            $table->text('alamat');
-            $table->string('nomor_telepon');
+            $table->string('agama')->nullable();
+            $table->text('alamat')->nullable();
+            $table->string('nomor_telepon')->nullable();
             $table->timestamps();
         });
     }

@@ -18,6 +18,10 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+// TAMBAHKAN DUA BARIS INI UNTUK RENDER HOOK
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Blade;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -30,13 +34,20 @@ class AdminPanelProvider extends PanelProvider
 
             // --- PENGATURAN LOGO DI SINI ---
             ->brandName('Sistem Monitoring PKL')
-            ->brandLogo(asset('images/logo_sekolah.png')) // Pastikan file ada di public/images/logo.png
-            ->brandLogoHeight('3rem')             // Atur tinggi sesuai kebutuhan
-            ->favicon(asset('favicon.ico'))       // Icon pada tab browser
+            ->brandLogo(asset('images/logo_sekolah.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/logo_sekolah.png'))
             // -------------------------------
 
+            // --- KATA-KATA SELAMAT DATANG DI HALAMAN LOGIN ---
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
+                fn (): string => Blade::render('<div class="text-center mb-2 mt-4"><h2 class="text-2xl font-bold text-gray-900 dark:text-white">Selamat Datang</h2><p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Sistem Informasi PKL SMKN 5 Pekanbaru</p></div>')
+            )
+            // -------------------------------------------------
+
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#0d6dfd',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -44,10 +55,6 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -61,7 +68,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                // TAMBAHKAN MIDDLEWARE BARU KITA DI SINI
                 \App\Http\Middleware\AdminPanelAccessMiddleware::class,
             ]);
     }

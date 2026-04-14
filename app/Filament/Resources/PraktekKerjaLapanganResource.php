@@ -2,12 +2,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PraktekKerjaLapanganResource\Pages;
+use App\Models\PengajuanMagang;
 use App\Models\PraktekKerjaLapangan;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Forms\Set;
+use Filament\Resources\Resource; // Ditambahkan untuk mengatur state field lain
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PraktekKerjaLapanganResource extends Resource
 {
@@ -22,16 +25,45 @@ class PraktekKerjaLapanganResource extends Resource
                 Forms\Components\Section::make('Data Peserta & Tempat Magang')
                     ->schema([
                         Forms\Components\Select::make('siswa_id')
-                            ->relationship('siswa', 'nama')
                             ->label('Nama Siswa')
+                            ->relationship(
+                                name: 'siswa',
+                                titleAttribute: 'nama',
+                                // Hanya tampilkan siswa yang pengajuannya "Diterima"
+                                modifyQueryUsing: fn(Builder $query) => $query->whereIn('id', PengajuanMagang::where('status_pengajuan', 'Diterima')->select('siswa_id'))
+                            )
+                        // Tampilkan Nama - Kelas - Jurusan
+                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nama} - {$record->kelas} - {$record->jurusan}")
                             ->searchable()
                             ->preload()
+                            ->live() // Membuat field ini reaktif
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                // Jika admin memilih siswa (state tidak kosong)
+                                if ($state) {
+                                    // Cari data pengajuan magang milik siswa tersebut yang diterima
+                                    $pengajuan = PengajuanMagang::where('siswa_id', $state)
+                                        ->where('status_pengajuan', 'Diterima')
+                                        ->first();
+
+                                    // Jika ketemu, set nilai dropdown industri_id secara otomatis
+                                    if ($pengajuan) {
+                                        $set('industri_id', $pengajuan->industri_id);
+                                    }
+                                } else {
+                                    // Kosongkan industri jika siswa dihapus dari dropdown
+                                    $set('industri_id', null);
+                                }
+                            })
                             ->required(),
+
                         Forms\Components\Select::make('industri_id')
                             ->relationship('industri', 'nama')
                             ->label('Tempat Industri')
                             ->searchable()
                             ->preload()
+                            // Ganti readOnly() menjadi kombinasi dua baris ini:
+                            ->disabled()
+                            ->dehydrated() // Wajib ditambahkan agar data yang di-disable tetap disave ke database
                             ->required(),
                     ])->columns(2),
 
@@ -59,7 +91,7 @@ class PraktekKerjaLapanganResource extends Resource
                         Forms\Components\DatePicker::make('tgl_selesai')
                             ->label('Tanggal Selesai')
                             ->required()
-                            ->afterOrEqual('tgl_mulai'), // Validasi agar tgl selesai tidak lebih awal dari tgl mulai
+                            ->afterOrEqual('tgl_mulai'),
                         Forms\Components\Select::make('status_magang')
                             ->options([
                                 'Aktif'   => 'Aktif',
@@ -86,7 +118,7 @@ class PraktekKerjaLapanganResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('guru_pembimbing.nama')
                     ->label('Guru Pembimbing')
-                    ->toggleable(isToggledHiddenByDefault: true), // Disembunyikan secara default agar tabel tidak terlalu padat
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('pembimbing_industri.nama')
                     ->label('Pembimbing Lapangan')
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -107,7 +139,7 @@ class PraktekKerjaLapanganResource extends Resource
                     ]),
             ])
             ->filters([
-                // Anda bisa menambahkan filter berdasarkan status nanti jika diperlukan
+                //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
