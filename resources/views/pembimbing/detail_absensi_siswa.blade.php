@@ -142,8 +142,7 @@
                             </p>
                             <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
                                 @if ($absen->status_kehadiran === 'Hadir')
-                                    Masuk: {{ \Carbon\Carbon::parse($absen->jam_masuk)->format('H:i') }} • Keluar:
-                                    {{ $absen->jam_pulang ? \Carbon\Carbon::parse($absen->jam_pulang)->format('H:i') : '--:--' }}
+                                    Masuk: {{ \Carbon\Carbon::parse($absen->jam_masuk)->format('H:i') }}
                                 @else
                                     Keterangan: {{ $absen->status_kehadiran }}
                                 @endif

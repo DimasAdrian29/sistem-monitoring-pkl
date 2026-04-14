@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/siswa/absensi', [AbsensiController::class, 'index']);
             // MENJADI:
             Route::get('/siswa/absensi/form_absensi', [App\Http\Controllers\AbsensiController::class, 'formAbsensi']);
+            Route::post('/siswa/absensi/store', [AbsensiController::class, 'storeAbsensi'])->name('siswa.absensi.store');
             // Di dalam middleware cek.magang
             Route::get('/siswa/jurnal_harian', [SiswaController::class, 'jurnalIndex']);
             Route::get('/siswa/jurnal_harian/form_jurnal_harian', [SiswaController::class, 'jurnalCreate']);

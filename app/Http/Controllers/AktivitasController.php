@@ -1,21 +1,19 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
+use App\Models\GuruPembimbing;
 use App\Models\Logbook;
+use App\Models\PembimbingIndustri;
 use App\Models\PraktekKerjaLapangan;
 use App\Models\Siswa;
-use App\Models\GuruPembimbing;
-use App\Models\PembimbingIndustri;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AktivitasController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user   = Auth::user();
         $pklIds = [];
 
         // 1. Kumpulkan ID PKL berdasarkan Role
@@ -39,7 +37,7 @@ class AktivitasController extends Controller
         // 2. Ambil Data Absensi dan Logbook jika ada PKL
         $activities = collect();
 
-        if (!empty($pklIds)) {
+        if (! empty($pklIds)) {
             // Ambil Absensi
             $absensis = Absensi::with('praktek_kerja_lapangan.siswa')
                 ->whereIn('praktek_kerja_lapangan_id', $pklIds)
@@ -52,27 +50,27 @@ class AktivitasController extends Controller
 
             // 3. Format dan Gabungkan Data (Merge)
             foreach ($absensis as $absen) {
-                $activities->push((object)[
-                    'type' => 'absensi',
-                    'sort_date' => $absen->created_at, // Untuk sorting
-                    'tanggal' => $absen->tanggal,
-                    'siswa_nama' => $absen->praktek_kerja_lapangan->siswa->nama ?? 'Unknown',
+                $activities->push((object) [
+                    'type'             => 'absensi',
+                    'sort_date'        => $absen->created_at, // Untuk sorting
+                    'tanggal'          => $absen->tanggal,
+                    'siswa_nama'       => $absen->praktek_kerja_lapangan->siswa->nama ?? 'Unknown',
                     'status_kehadiran' => $absen->status_kehadiran,
-                    'status_validasi' => $absen->status_validasi,
-                    'jam' => $absen->jam_masuk ? \Carbon\Carbon::parse($absen->jam_masuk)->format('H:i') : '-',
-                    'detail' => 'Melakukan absensi kehadiran'
+                    'status_validasi'  => $absen->status_validasi,
+                    'jam'              => $absen->jam_masuk ? \Carbon\Carbon::parse($absen->jam_masuk)->format('H:i') : '-',
+                    'detail'           => 'Melakukan absensi kehadiran',
                 ]);
             }
 
             foreach ($logbooks as $log) {
-                $activities->push((object)[
-                    'type' => 'logbook',
-                    'sort_date' => $log->created_at, // Untuk sorting
-                    'tanggal' => $log->tanggal,
-                    'siswa_nama' => $log->praktek_kerja_lapangan->siswa->nama ?? 'Unknown',
+                $activities->push((object) [
+                    'type'            => 'logbook',
+                    'sort_date'       => $log->created_at, // Untuk sorting
+                    'tanggal'         => $log->tanggal,
+                    'siswa_nama'      => $log->praktek_kerja_lapangan->siswa->nama ?? 'Unknown',
                     'status_validasi' => $log->status_validasi,
-                    'jam' => $log->created_at->format('H:i'), // Jam input jurnal
-                    'detail' => \Illuminate\Support\Str::limit($log->kegiatan, 50, '...')
+                    'jam'             => $log->created_at->format('H:i'), // Jam input jurnal
+                    'detail'          => \Illuminate\Support\Str::limit($log->kegiatan, 50, '...'),
                 ]);
             }
 
