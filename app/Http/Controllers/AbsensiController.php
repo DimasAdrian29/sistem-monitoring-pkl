@@ -53,19 +53,25 @@ class AbsensiController extends Controller
         ]);
     }
 
+   
     public function formAbsensi()
     {
         $user  = Auth::user();
         $siswa = Siswa::where('user_id', $user->id)->first();
-        $pkl   = PraktekKerjaLapangan::with('industri')->where('siswa_id', $siswa->id)->first();
+        $pkl   = PraktekKerjaLapangan::with('industri')
+            ->where('siswa_id', $siswa->id)
+            ->first();
 
         if (! $pkl || ! $pkl->industri) {
             return redirect('/pengajuan')->with('error', 'Data penempatan PKL atau industri belum diatur.');
         }
 
+        // Cast ke float agar tidak jadi string di JS
+        $pkl->industri->latitude  = (float) $pkl->industri->latitude;
+        $pkl->industri->longitude = (float) $pkl->industri->longitude;
+
         return view('siswa.form_absensi', compact('pkl'));
     }
-
     public function storeAbsensi(Request $request)
     {
         $user  = Auth::user();
@@ -92,4 +98,5 @@ class AbsensiController extends Controller
 
         return redirect('/siswa/absensi')->with('success', 'Presensi berhasil dikirim!');
     }
+
 }

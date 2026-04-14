@@ -1,25 +1,28 @@
 @extends('layouts.siswa', ['hideNav' => true])
 @section('title', 'Form Presensi - SMKN 5 Pekanbaru')
-@section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .map-container { height: 220px; width: 100%; border-radius: 1.5rem; overflow: hidden; border: 2px solid #e2e8f0; }
-        #map { height: 100%; width: 100%; }
-    </style>
-@endsection
 
 @section('content')
     @include('siswa.partials.header_menu', ['title' => 'Form Presensi', 'backUrl' => url('/siswa/absensi')])
+
+    {{-- Leaflet CSS dimuat di sini, DALAM section content, bukan styles --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map { height: 220px; width: 100%; }
+    </style>
+
     <div class="flex flex-col min-h-[calc(100vh-64px)] bg-slate-50 dark:bg-gray-900">
         <main class="flex-1 p-4 sm:p-6 pb-36">
             <div class="max-w-2xl mx-auto space-y-5">
+
                 {{-- Card Map --}}
                 <div class="bg-white dark:bg-gray-800 p-3 rounded-[2rem] shadow-sm border border-slate-100">
-                    <div class="map-container"><div id="map"></div></div>
-                    <div class="p-3 flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary">my_location</span>
+                    <div class="rounded-[1.5rem] overflow-hidden border-2 border-slate-200" style="height:220px;">
+                        <div id="map" style="height:100%;width:100%;"></div>
+                    </div>
+                    <div class="p-3 flex items-center gap-3 mt-1">
+                        <div class="h-10 w-10 rounded-2xl bg-blue-50 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-blue-500">my_location</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Status Lokasi</p>
@@ -32,175 +35,249 @@
                 {{-- Form --}}
                 <form id="absensiForm" action="{{ url('/siswa/absensi/store') }}" method="POST" class="space-y-5">
                     @csrf
-                    <input type="hidden" name="latitude" id="lat-input">
+                    <input type="hidden" name="latitude"  id="lat-input">
                     <input type="hidden" name="longitude" id="lng-input">
-                    <input type="hidden" name="jarak" id="dist-input">
+                    <input type="hidden" name="jarak"     id="dist-input">
 
                     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-sm p-6 space-y-6">
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Hari & Tanggal</label>
-                            <input type="text" value="{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}" readonly
-                                class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold">
+                            <input type="text"
+                                   value="{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}"
+                                   readonly
+                                   class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-bold">
                         </div>
+
                         <div class="space-y-2">
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Status Kehadiran</label>
                             <select id="statusKehadiran" name="status_kehadiran"
-                                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-bold">
+                                    class="w-full rounded-2xl border border-slate-200 bg-white dark:bg-gray-700 px-4 py-3.5 text-sm font-bold">
                                 <option value="Hadir">Hadir</option>
                                 <option value="Izin">Izin</option>
                                 <option value="Sakit">Sakit</option>
                             </select>
                         </div>
+
                         <div id="buktiIzinContainer" class="space-y-2 hidden">
                             <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Unggah Bukti</label>
-                            <input type="file" name="bukti" class="block w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary" />
+                            <input type="file" name="bukti"
+                                   class="block w-full text-xs text-slate-500
+                                          file:mr-2 file:py-2 file:px-4 file:rounded-xl
+                                          file:border-0 file:text-xs file:font-bold
+                                          file:bg-blue-50 file:text-blue-600" />
                         </div>
                     </div>
 
-                    <div class="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-t p-4 pb-8">
+                    {{-- Tombol Submit Fixed --}}
+                    <div class="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-t border-slate-200 p-4 pb-8">
                         <div class="max-w-2xl mx-auto">
                             <button type="submit" id="btnSubmit" disabled
-                                class="w-full flex items-center justify-center gap-3 rounded-2xl bg-slate-300 py-4 text-sm font-black text-white shadow-lg cursor-not-allowed uppercase tracking-widest">
+                                    class="w-full flex items-center justify-center gap-3 rounded-2xl py-4 text-sm font-black text-white shadow-lg uppercase tracking-widest transition-colors duration-200 bg-slate-300 cursor-not-allowed">
                                 <span id="btnText">Mencari Lokasi...</span>
-                                <span class="material-symbols-outlined">send</span>
+                                <span class="material-symbols-outlined text-base">send</span>
                             </button>
                         </div>
                     </div>
                 </form>
+
             </div>
         </main>
     </div>
 
+    {{-- Leaflet JS --}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // Data dari server
-        const destLat = {{ $pkl->industri->latitude ?? 0 }};
-        const destLng = {{ $pkl->industri->longitude ?? 0 }};
-        const radiusMaks = 50; // meter
+    {{-- SweetAlert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        // Cegah error jika koordinat industri tidak valid
+    <script>
+        // ─── Data dari server ───────────────────────────────────────────
+        const destLat    = {{ (float) ($pkl->industri->latitude  ?? 0) }};
+        const destLng    = {{ (float) ($pkl->industri->longitude ?? 0) }};
+        const radiusMaks = 50;
+
+        // Guard jika koordinat belum diisi admin
         if (destLat === 0 || destLng === 0) {
-            Swal.fire('Error', 'Koordinat industri belum diatur oleh administrator.', 'error').then(() => window.history.back());
-            throw new Error('Invalid destination coordinates');
+            Swal.fire('Error', 'Koordinat industri belum diatur oleh administrator.', 'error')
+                .then(() => window.history.back());
+            throw new Error('Koordinat industri tidak valid.');
         }
 
-        let map, userMarker, circle;
+        // ─── Variabel state ─────────────────────────────────────────────
+        let map, userMarker;
         let currentDistance = null;
 
-        // Inisialisasi map dengan titik industri dan lingkaran radius
+        // ─── Inisialisasi Peta ──────────────────────────────────────────
         function initMap() {
-            map = L.map('map').setView([destLat, destLng], 17);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            // Pastikan container sudah ada di DOM
+            map = L.map('map', { zoomControl: true, attributionControl: false })
+                   .setView([destLat, destLng], 17);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
             // Marker industri
-            L.marker([destLat, destLng], { icon: L.divIcon({ className: 'custom-marker', html: '🏭', iconSize: [24,24] }) }).addTo(map);
-            // Lingkaran radius 50 meter
-            circle = L.circle([destLat, destLng], { color: '#3b82f6', weight: 2, radius: radiusMaks }).addTo(map);
+            const iconIndustri = L.divIcon({
+                html: '<div style="font-size:20px;line-height:1;">🏭</div>',
+                className: '',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+            L.marker([destLat, destLng], { icon: iconIndustri })
+             .addTo(map)
+             .bindPopup('Lokasi Industri');
+
+            // Lingkaran radius
+            L.circle([destLat, destLng], {
+                color: '#3b82f6',
+                fillColor: '#93c5fd',
+                fillOpacity: 0.15,
+                weight: 2,
+                radius: radiusMaks
+            }).addTo(map);
         }
 
-        // Hitung jarak (meter)
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3;
+        // ─── Hitung Jarak Haversine ─────────────────────────────────────
+        function hitungJarak(lat1, lon1, lat2, lon2) {
+            const R    = 6371e3;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
-                      Math.sin(dLon/2) * Math.sin(dLon/2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const a    = Math.sin(dLat / 2) ** 2 +
+                         Math.cos(lat1 * Math.PI / 180) *
+                         Math.cos(lat2 * Math.PI / 180) *
+                         Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
 
-        // Update UI berdasarkan status dan jarak
+        // ─── Update UI ──────────────────────────────────────────────────
         function updateUI(distance) {
-            const status = document.getElementById('statusKehadiran').value;
-            const distanceMeter = Math.round(distance);
-            document.getElementById('dist-input').value = distanceMeter;
-            document.getElementById('distance-badge').classList.remove('hidden');
-            document.getElementById('distance-badge').innerText = distanceMeter + " m";
+            const status       = document.getElementById('statusKehadiran').value;
+            const jarakMeter   = Math.round(distance);
+            const locText      = document.getElementById('location-text');
+            const badge        = document.getElementById('distance-badge');
+            const btn          = document.getElementById('btnSubmit');
+            const btnTxt       = document.getElementById('btnText');
+
+            document.getElementById('dist-input').value = jarakMeter;
+            badge.classList.remove('hidden');
+            badge.innerText = jarakMeter + ' m';
 
             if (status === 'Hadir') {
                 if (distance <= radiusMaks) {
-                    document.getElementById('location-text').innerHTML = "✅ Dalam radius industri (" + distanceMeter + " m)";
-                    document.getElementById('location-text').className = "text-xs font-bold text-green-600";
-                    document.getElementById('btnSubmit').disabled = false;
-                    document.getElementById('btnSubmit').classList.remove('bg-slate-300', 'bg-green-600');
-                    document.getElementById('btnSubmit').classList.add('bg-green-600');
-                    document.getElementById('btnText').innerText = "Kirim Presensi";
+                    locText.innerHTML  = '✅ Dalam radius industri (' + jarakMeter + ' m)';
+                    locText.className  = 'text-xs font-bold text-green-600';
+                    btn.disabled       = false;
+                    btn.className      = btn.className
+                        .replace('bg-slate-300', '')
+                        .replace('bg-red-400', '')
+                        .replace('cursor-not-allowed', '') + ' bg-green-600';
+                    btnTxt.innerText   = 'Kirim Presensi';
                 } else {
-                    document.getElementById('location-text').innerHTML = "❌ Luar radius (maks 50 m) - Jarak " + distanceMeter + " m";
-                    document.getElementById('location-text').className = "text-xs font-bold text-red-500";
-                    document.getElementById('btnSubmit').disabled = true;
-                    document.getElementById('btnSubmit').classList.remove('bg-green-600', 'bg-slate-300');
-                    document.getElementById('btnSubmit').classList.add('bg-slate-300');
-                    document.getElementById('btnText').innerText = "Terlalu Jauh";
+                    locText.innerHTML  = '❌ Di luar radius — jarak ' + jarakMeter + ' m (maks 50 m)';
+                    locText.className  = 'text-xs font-bold text-red-500';
+                    btn.disabled       = true;
+                    btn.className      = btn.className
+                        .replace('bg-green-600', '')
+                        .replace('bg-blue-600', '') + ' bg-slate-300 cursor-not-allowed';
+                    btnTxt.innerText   = 'Terlalu Jauh';
                 }
             } else {
-                document.getElementById('location-text').innerHTML = "⏩ Lokasi diabaikan (Izin/Sakit)";
-                document.getElementById('location-text').className = "text-xs font-bold text-slate-500";
-                document.getElementById('btnSubmit').disabled = false;
-                document.getElementById('btnSubmit').classList.remove('bg-slate-300');
-                document.getElementById('btnSubmit').classList.add('bg-primary');
-                document.getElementById('btnText').innerText = "Kirim Laporan";
+                // Izin / Sakit — lokasi tidak divalidasi
+                locText.innerHTML  = '⏩ Lokasi diabaikan (' + status + ')';
+                locText.className  = 'text-xs font-bold text-slate-500';
+                btn.disabled       = false;
+                btn.className      = btn.className
+                    .replace('bg-slate-300', '')
+                    .replace('bg-green-600', '')
+                    .replace('cursor-not-allowed', '') + ' bg-blue-600';
+                btnTxt.innerText   = 'Kirim Laporan';
             }
         }
 
-        // Tambahkan marker user ke map
-        function addUserMarker(lat, lng) {
+        // ─── Tambah Marker User ─────────────────────────────────────────
+        function tambahMarkerUser(lat, lng) {
             if (userMarker) map.removeLayer(userMarker);
-            userMarker = L.marker([lat, lng], { icon: L.divIcon({ className: 'user-marker', html: '📍', iconSize: [24,24] }) }).addTo(map);
+            const iconUser = L.divIcon({
+                html: '<div style="font-size:20px;line-height:1;">📍</div>',
+                className: '',
+                iconSize: [24, 24],
+                iconAnchor: [12, 24]
+            });
+            userMarker = L.marker([lat, lng], { icon: iconUser })
+                          .addTo(map)
+                          .bindPopup('Lokasi Anda');
             map.setView([lat, lng], 17);
         }
 
-        // Minta dan dapatkan lokasi
+        // ─── Ambil Lokasi GPS ───────────────────────────────────────────
         function getLocation() {
             Swal.fire({
-                title: 'Mengakses Lokasi',
+                title: 'Izin Lokasi',
                 text: 'Aktifkan GPS dan izinkan akses lokasi untuk presensi.',
                 icon: 'info',
                 confirmButtonText: 'Izinkan',
                 allowOutsideClick: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({ title: 'Mendapatkan posisi...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            Swal.close();
-                            const lat = position.coords.latitude;
-                            const lng = position.coords.longitude;
-                            document.getElementById('lat-input').value = lat;
-                            document.getElementById('lng-input').value = lng;
-                            const distance = calculateDistance(lat, lng, destLat, destLng);
-                            currentDistance = distance;
-                            addUserMarker(lat, lng);
-                            updateUI(distance);
-                        },
-                        (error) => {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal Mendapatkan Lokasi',
-                                text: error.code === 1 ? 'Izin lokasi ditolak. Silakan aktifkan izin lokasi di browser.' :
-                                       error.code === 2 ? 'Posisi tidak tersedia. Pastikan GPS aktif.' :
-                                       'Waktu habis. Coba lagi di area terbuka.',
-                                confirmButtonText: 'Coba Lagi'
-                            }).then(() => getLocation());
-                        },
-                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-                    );
-                }
+            }).then(result => {
+                if (!result.isConfirmed) return;
+
+                Swal.fire({
+                    title: 'Mendapatkan posisi...',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        Swal.close();
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        document.getElementById('lat-input').value  = lat;
+                        document.getElementById('lng-input').value  = lng;
+
+                        const jarak = hitungJarak(lat, lng, destLat, destLng);
+                        currentDistance = jarak;
+
+                        tambahMarkerUser(lat, lng);
+                        updateUI(jarak);
+                    },
+                    error => {
+                        const pesan = {
+                            1: 'Izin lokasi ditolak. Aktifkan izin lokasi di browser.',
+                            2: 'Posisi tidak tersedia. Pastikan GPS aktif.',
+                            3: 'Waktu habis. Coba di area lebih terbuka.'
+                        }[error.code] || 'Gagal mendapatkan lokasi.';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: pesan,
+                            confirmButtonText: 'Coba Lagi'
+                        }).then(() => getLocation());
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                );
             });
         }
 
-        // Saat status kehadiran berubah
-        document.getElementById('statusKehadiran').addEventListener('change', function() {
-            document.getElementById('buktiIzinContainer').classList.toggle('hidden', this.value === 'Hadir');
+        // ─── Event: Ganti Status Kehadiran ──────────────────────────────
+        document.getElementById('statusKehadiran').addEventListener('change', function () {
+            document.getElementById('buktiIzinContainer')
+                    .classList.toggle('hidden', this.value === 'Hadir');
+
             if (currentDistance !== null) {
                 updateUI(currentDistance);
             } else {
-                // Jika belum dapat lokasi, minta ulang
                 getLocation();
             }
         });
 
-        // Mulai: inisialisasi map, lalu minta lokasi
-        initMap();
-        getLocation();
+        // ─── Boot ───────────────────────────────────────────────────────
+        // Leaflet butuh container sudah ter-render. Tunggu DOMContentLoaded.
+        document.addEventListener('DOMContentLoaded', function () {
+            initMap();
+            getLocation();
+        });
     </script>
 @endsection
