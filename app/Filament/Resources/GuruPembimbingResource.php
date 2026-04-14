@@ -120,7 +120,7 @@ class GuruPembimbingResource extends Resource
                     ->importer(GuruPembimbingImporter::class)
                     ->label('Import Guru')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->color('success'), // Diberi warna hijau agar beda dengan siswa
+                    ->color('primary'),
             ])
             // ------------------------------------------
             ->actions([

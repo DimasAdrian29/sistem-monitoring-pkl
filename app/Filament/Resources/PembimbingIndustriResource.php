@@ -96,7 +96,7 @@ class PembimbingIndustriResource extends Resource
                     ->importer(PembimbingIndustriImporter::class)
                     ->label('Import Pembimbing')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->color('warning'), // Diberi warna kuning/warning agar sesuai temanya
+                    ->color('primary'),
             ])
             // ------------------------------------------
             ->actions([
