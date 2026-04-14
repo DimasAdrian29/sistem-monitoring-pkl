@@ -92,7 +92,7 @@ class SiswaController extends Controller
 
         $request->validate([
             'kegiatan' => 'required|string|min:10',
-            'foto'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Max 2MB
+            'foto'     => 'nullable|image|mimes:jpeg,png,jpg|max:5048', // Max 2MB
         ]);
 
         $namaFile = null;
