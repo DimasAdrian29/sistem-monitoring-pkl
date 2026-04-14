@@ -10,10 +10,17 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libicu-dev \
-    libzip-dev
+    libzip-dev \
+    # Tambahkan library pendukung gambar di bawah ini:
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libwebp-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# --- BAGIAN KRUSIAL: Konfigurasi GD agar support JPEG & WebP ---
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip
