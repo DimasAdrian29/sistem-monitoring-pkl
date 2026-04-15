@@ -6,8 +6,9 @@ use App\Models\PengajuanMagang;
 use App\Models\PraktekKerjaLapangan;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Resources\Resource; // Ditambahkan untuk mengatur state field lain
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,29 +30,25 @@ class PraktekKerjaLapanganResource extends Resource
                             ->relationship(
                                 name: 'siswa',
                                 titleAttribute: 'nama',
-                                // Hanya tampilkan siswa yang pengajuannya "Diterima"
                                 modifyQueryUsing: fn(Builder $query) => $query->whereIn('id', PengajuanMagang::where('status_pengajuan', 'Diterima')->select('siswa_id'))
                             )
-                        // Tampilkan Nama - Kelas - Jurusan
                             ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nama} - {$record->kelas} - {$record->jurusan}")
                             ->searchable()
                             ->preload()
-                            ->live() // Membuat field ini reaktif
+                            ->live()
                             ->afterStateUpdated(function (Set $set, ?string $state) {
-                                // Jika admin memilih siswa (state tidak kosong)
                                 if ($state) {
-                                    // Cari data pengajuan magang milik siswa tersebut yang diterima
                                     $pengajuan = PengajuanMagang::where('siswa_id', $state)
                                         ->where('status_pengajuan', 'Diterima')
                                         ->first();
 
-                                    // Jika ketemu, set nilai dropdown industri_id secara otomatis
                                     if ($pengajuan) {
                                         $set('industri_id', $pengajuan->industri_id);
+                                        $set('pembimbing_industri_id', null);
                                     }
                                 } else {
-                                    // Kosongkan industri jika siswa dihapus dari dropdown
                                     $set('industri_id', null);
+                                    $set('pembimbing_industri_id', null);
                                 }
                             })
                             ->required(),
@@ -61,23 +58,42 @@ class PraktekKerjaLapanganResource extends Resource
                             ->label('Tempat Industri')
                             ->searchable()
                             ->preload()
-                            // Ganti readOnly() menjadi kombinasi dua baris ini:
                             ->disabled()
-                            ->dehydrated() // Wajib ditambahkan agar data yang di-disable tetap disave ke database
+                            ->dehydrated()
                             ->required(),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Data Pembimbing')
                     ->schema([
+                        // PERUBAHAN GURU PEMBIMBING ADA DI SINI
                         Forms\Components\Select::make('guru_pembimbing_id')
-                            ->relationship('guru_pembimbing', 'nama')
                             ->label('Guru Pembimbing (Sekolah)')
-                            ->searchable()
+                            ->relationship(
+                                name: 'guru_pembimbing',
+                                titleAttribute: 'nama'
+                            )
+                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nama} - {$record->jurusan}")
+                            ->searchable(['nama', 'jurusan'])
                             ->preload()
                             ->required(),
+
                         Forms\Components\Select::make('pembimbing_industri_id')
-                            ->relationship('pembimbing_industri', 'nama')
                             ->label('Pembimbing Industri (Lapangan)')
+                            ->relationship(
+                                name: 'pembimbing_industri',
+                                titleAttribute: 'nama',
+                                modifyQueryUsing: function (Builder $query, Get $get) {
+                                    $query->with('industri');
+                                    $industriId = $get('industri_id');
+
+                                    if ($industriId) {
+                                        $query->where('industri_id', $industriId);
+                                    } else {
+                                        $query->whereNull('id');
+                                    }
+                                }
+                            )
+                            ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nama} - " . ($record->industri->nama ?? 'Tidak Ada Industri'))
                             ->searchable()
                             ->preload()
                             ->required(),
@@ -118,6 +134,8 @@ class PraktekKerjaLapanganResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('guru_pembimbing.nama')
                     ->label('Guru Pembimbing')
+                    // Opsional: Tambahkan jurusan sebagai deskripsi kecil di bawah nama pada tabel
+                    ->description(fn($record) => $record->guru_pembimbing?->jurusan)
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('pembimbing_industri.nama')
                     ->label('Pembimbing Lapangan')

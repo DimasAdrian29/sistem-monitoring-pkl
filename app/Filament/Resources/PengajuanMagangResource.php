@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PengajuanMagangResource\Pages;
@@ -13,7 +14,7 @@ class PengajuanMagangResource extends Resource
 {
     protected static ?string $model = PengajuanMagang::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text'; // Bisa disesuaikan
 
     public static function form(Form $form): Form
     {
@@ -52,10 +53,10 @@ class PengajuanMagangResource extends Resource
                         Forms\Components\FileUpload::make('cv')
                             ->label('Upload CV (PDF)')
                             ->acceptedFileTypes(['application/pdf'])
-                            ->directory('cv-pengajuan') // Folder penyimpanan di storage/app/public/cv-pengajuan
+                            ->directory('cv-pengajuan') // Disimpan di storage/app/public/cv-pengajuan
                             ->maxSize(5120)             // Maksimal 5MB
                             ->required()
-                            ->downloadable(), // Tombol untuk download langsung dari admin
+                            ->downloadable(),
                     ]),
             ]);
     }
@@ -90,7 +91,42 @@ class PengajuanMagangResource extends Resource
                     ->openUrlInNewTab()
                     ->icon('heroicon-o-document-text'),
             ])
+            ->filters([
+                // Filter untuk memudahkan admin melihat berdasarkan status
+                Tables\Filters\SelectFilter::make('status_pengajuan')
+                    ->label('Filter Status')
+                    ->options([
+                        'Menunggu' => 'Menunggu',
+                        'Diterima' => 'Diterima',
+                        'Ditolak'  => 'Ditolak',
+                    ]),
+            ])
             ->actions([
+                // ACTION: Terima Pengajuan
+                Tables\Actions\Action::make('terima')
+                    ->label('Terima')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Terima Pengajuan')
+                    ->modalDescription('Apakah Anda yakin ingin menerima pengajuan magang ini?')
+                    ->action(fn (PengajuanMagang $record) => $record->update(['status_pengajuan' => 'Diterima']))
+                    // Sembunyikan jika status sudah Diterima
+                    ->hidden(fn (PengajuanMagang $record) => $record->status_pengajuan === 'Diterima'),
+
+                // ACTION: Tolak Pengajuan
+                Tables\Actions\Action::make('tolak')
+                    ->label('Tolak')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Tolak Pengajuan')
+                    ->modalDescription('Apakah Anda yakin ingin menolak pengajuan magang ini?')
+                    ->action(fn (PengajuanMagang $record) => $record->update(['status_pengajuan' => 'Ditolak']))
+                    // Sembunyikan jika status sudah Diterima ATAU Ditolak
+                    ->hidden(fn (PengajuanMagang $record) => in_array($record->status_pengajuan, ['Diterima', 'Ditolak'])),
+
+                // Aksi Bawaan Filament
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ]);
