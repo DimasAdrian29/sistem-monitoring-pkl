@@ -14,11 +14,19 @@ class SiswaNilaiController extends Controller
         // Cari data siswa berdasarkan user yang login
         $siswa = Siswa::where('user_id', $user->id)->firstOrFail();
 
-        // Ambil data PKL beserta relasi nilai, pembimbing industri, dan guru pembimbing
-        $pkl = PraktekKerjaLapangan::with(['nilai', 'industri', 'pembimbing_industri', 'guru_pembimbing'])
-            ->where('siswa_id', $siswa->id)
-            ->latest() // Ambil PKL terbaru
-            ->first();
+        // // Ambil data PKL beserta relasi nilai, pembimbing industri, dan guru pembimbing
+        // $pkl = PraktekKerjaLapangan::with(['nilai', 'industri', 'pembimbing_industri', 'guru_pembimbing'])
+        //     ->where('siswa_id', $siswa->id)
+        //     ->latest() // Ambil PKL terbaru
+        //     ->first();
+        // Cari PKL siswa yang login
+        $pkl = PraktekKerjaLapangan::with([
+            'industri',
+            'nilai',
+            'guruPembimbing',
+            'pembimbingIndustri',
+            'sertifikat', // <-- tambahkan ini
+        ])->where('siswa_id', $siswa->id)->latest()->first();
 
         // Logika Hitung Rata-rata (Hanya menghitung aspek yang sudah diisi)
         $rataRata = 0;

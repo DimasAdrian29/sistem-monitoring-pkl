@@ -54,8 +54,31 @@ class PraktekKerjaLapangan extends Model
     }
     // Relasi ke tabel Nilai (One to One)
     // ==========================================
+    // public function nilai()
+    // {
+    //     return $this->hasOne(Nilai::class);
+    // }
+    // Tambahkan method ini di dalam class
+    public function sertifikat()
+    {
+        return $this->hasOne(Sertifikat::class, 'praktek_kerja_lapangan_id');
+    }
+
+
+    public function guruPembimbing()
+    {
+        return $this->belongsTo(GuruPembimbing::class);
+    }
+
+    public function pembimbingIndustri()
+    {
+        return $this->belongsTo(PembimbingIndustri::class);
+    }
+
     public function nilai()
     {
-        return $this->hasOne(Nilai::class);
+        return $this->hasOne(Nilai::class, 'praktek_kerja_lapangan_id');
     }
+
+
 }
