@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PraktekKerjaLapanganResource\Pages;
 use App\Models\PengajuanMagang;
 use App\Models\PraktekKerjaLapangan;
+use App\Models\Siswa; // Pastikan model Siswa di-import
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -65,7 +67,6 @@ class PraktekKerjaLapanganResource extends Resource
 
                 Forms\Components\Section::make('Data Pembimbing')
                     ->schema([
-                        // PERUBAHAN GURU PEMBIMBING ADA DI SINI
                         Forms\Components\Select::make('guru_pembimbing_id')
                             ->label('Guru Pembimbing (Sekolah)')
                             ->relationship(
@@ -134,7 +135,6 @@ class PraktekKerjaLapanganResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('guru_pembimbing.nama')
                     ->label('Guru Pembimbing')
-                    // Opsional: Tambahkan jurusan sebagai deskripsi kecil di bawah nama pada tabel
                     ->description(fn($record) => $record->guru_pembimbing?->jurusan)
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('pembimbing_industri.nama')
@@ -157,9 +157,55 @@ class PraktekKerjaLapanganResource extends Resource
                     ]),
             ])
             ->filters([
-                //
+                // 1. Filter Status Magang
+                Tables\Filters\SelectFilter::make('status_magang')
+                    ->label('Status Magang')
+                    ->options([
+                        'Aktif'   => 'Aktif',
+                        'Selesai' => 'Selesai',
+                        'Batal'   => 'Batal',
+                    ]),
+
+                // 2. Filter Kelas (Mengambil dari relasi siswa)
+                Tables\Filters\SelectFilter::make('kelas')
+                    ->label('Kelas')
+                    ->options([
+                        'X'   => 'Kelas X',
+                        'XI'  => 'Kelas XI',
+                        'XII' => 'Kelas XII',
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if (!empty($data['value'])) {
+                            $query->whereHas('siswa', function (Builder $query) use ($data) {
+                                $query->where('kelas', $data['value']);
+                            });
+                        }
+                    }),
+
+                // 3. Filter Jurusan (Dinamis mengambil jurusan unik dari tabel siswa)
+                Tables\Filters\SelectFilter::make('jurusan')
+                    ->label('Jurusan')
+                    ->options(fn () => Siswa::query()->select('jurusan')->distinct()->pluck('jurusan', 'jurusan')->toArray())
+                    ->query(function (Builder $query, array $data) {
+                        if (!empty($data['value'])) {
+                            $query->whereHas('siswa', function (Builder $query) use ($data) {
+                                $query->where('jurusan', $data['value']);
+                            });
+                        }
+                    }),
             ])
             ->actions([
+                // Action Tombol Update Status Selesai
+                Tables\Actions\Action::make('tandai_selesai')
+                    ->label('Selesai')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Tandai PKL Selesai')
+                    ->modalDescription('Apakah Anda yakin ingin mengubah status magang siswa ini menjadi Selesai?')
+                    ->action(fn (PraktekKerjaLapangan $record) => $record->update(['status_magang' => 'Selesai']))
+                    ->visible(fn (PraktekKerjaLapangan $record) => $record->status_magang !== 'Selesai'), // Sembunyikan jika sudah selesai
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ]);
