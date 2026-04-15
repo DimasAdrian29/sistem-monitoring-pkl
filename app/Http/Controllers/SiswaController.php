@@ -6,7 +6,7 @@ use App\Models\PraktekKerjaLapangan;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage; // Import library image
+use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
 class SiswaController extends Controller
@@ -19,13 +19,8 @@ class SiswaController extends Controller
         // Kita ambil data PKL tanpa mempedulikan status 'Aktif' dulu untuk tes
         $pkl = \App\Models\PraktekKerjaLapangan::with('industri')
             ->where('siswa_id', $siswa->id)
-            ->first(); // Hapus ->where('status_magang', 'Aktif')
+            ->first();
 
-        // Jangan pakai redirect di sini, karena sudah diurus Middleware 'cek.magang'
-        // Jika datanya benar-benar tidak ada, aplikasi akan error di view,
-        // tapi itu justru bagus untuk kita debug.
-
-        // Ambil aktivitas (sama seperti sebelumnya)
         $recentAbsensi = \App\Models\Absensi::where('praktek_kerja_lapangan_id', $pkl->id ?? 0)
             ->where('tanggal', '>=', \Carbon\Carbon::now()->subDays(7))
             ->get()
@@ -46,7 +41,6 @@ class SiswaController extends Controller
 
         return view('siswa.index', compact('siswa', 'pkl', 'activities'));
     }
-    // Tambahkan di App\Http\Controllers\SiswaController.php
 
     public function jurnalIndex()
     {
@@ -54,10 +48,10 @@ class SiswaController extends Controller
         $siswa = \App\Models\Siswa::where('user_id', $user->id)->first();
         $pkl   = \App\Models\PraktekKerjaLapangan::where('siswa_id', $siswa->id)->first();
 
-        // 1. Ambil semua riwayat jurnal
+        // 1. Ambil riwayat jurnal dengan PAGINATION (10 per halaman)
         $logbooks = \App\Models\Logbook::where('praktek_kerja_lapangan_id', $pkl->id)
             ->latest('tanggal')
-            ->get();
+            ->paginate(10); // PERUBAHAN DI SINI: get() diganti menjadi paginate(10)
 
         // 2. Cek apakah hari ini sudah mengisi jurnal
         $hasFilledToday = \App\Models\Logbook::where('praktek_kerja_lapangan_id', $pkl->id)
@@ -66,9 +60,9 @@ class SiswaController extends Controller
 
         return view('siswa.jurnal_harian', compact('logbooks', 'hasFilledToday'));
     }
+
     public function jurnalCreate()
     {
-        // Proteksi tambahan: jika hari ini sudah isi, jangan kasih masuk ke form
         $user  = Auth::user();
         $siswa = Siswa::where('user_id', $user->id)->first();
         $pkl   = PraktekKerjaLapangan::where('siswa_id', $siswa->id)->first();
@@ -92,7 +86,7 @@ class SiswaController extends Controller
 
         $request->validate([
             'kegiatan' => 'required|string|min:10',
-            'foto'     => 'nullable|image|mimes:jpeg,png,jpg|max:5048', // Max 2MB
+            'foto'     => 'nullable|image|mimes:jpeg,png,jpg|max:5048', // Max 5MB
         ]);
 
         $namaFile = null;
