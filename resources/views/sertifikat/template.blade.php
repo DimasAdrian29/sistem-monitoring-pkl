@@ -3,228 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Times New Roman', serif;
+            width: 297mm;
         }
 
-        /* ======================== */
-        /* HALAMAN DEPAN            */
-        /* ======================== */
+        /* ===================== */
+        /* HALAMAN DEPAN         */
+        /* ===================== */
         .halaman-depan {
-            width: 297mm;
-            height: 210mm;
-            padding: 12mm 18mm;
-            border: 10px solid #c8a84b;
+            width: 290mm;
+            height: 195mm;
+
+            border: 8px solid #c8a84b;
             outline: 3px solid #c8a84b;
-            outline-offset: -14px;
-            background: #fffdf5;
+            outline-offset: -12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            position: relative;
+            background: #fffdf5;
             page-break-after: always;
         }
 
-        .judul {
-            font-size: 38pt;
+        .halaman-depan .judul {
+            font-size: 36pt;
             font-weight: bold;
             color: #c8a84b;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            margin-bottom: 2px;
-            margin-top: 10px;
+            margin-bottom: 4px;
         }
 
-        .sub-judul {
-            font-size: 13pt;
+        .halaman-depan .sub-judul {
+            font-size: 14pt;
             color: #8B6914;
             letter-spacing: 3px;
             text-transform: uppercase;
-            padding-bottom: 10px;
+            margin-bottom: 30px;
             border-bottom: 2px solid #c8a84b;
-            display: inline-block;
-            margin-bottom: 18px;
+            padding-bottom: 12px;
         }
 
-        .label-kepada {
+        .halaman-depan .label-kepada {
             font-size: 11pt;
             color: #555;
             margin-bottom: 6px;
         }
 
-        .nama-siswa {
-            font-size: 26pt;
+        .halaman-depan .nama-siswa {
+            font-size: 28pt;
             font-weight: bold;
             color: #1a4a8a;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-decoration: underline;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
-        .info-siswa {
+        .halaman-depan .info-siswa {
             font-size: 11pt;
             color: #333;
-            line-height: 1.8;
-            margin-bottom: 8px;
+            line-height: 1.9;
+            margin-bottom: 10px;
         }
 
-        .nama-industri {
+        .halaman-depan .nama-industri {
             font-size: 18pt;
             font-weight: bold;
             color: #c0392b;
-            margin: 4px 0 6px;
+            margin: 4px 0 8px;
         }
 
-        .periode {
+        .halaman-depan .periode {
             font-size: 11pt;
             color: #333;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
-        .catatan-nilai {
+        .halaman-depan .catatan-nilai {
             font-size: 10pt;
             color: #555;
-            margin-bottom: 16px;
+            margin-bottom: 30px;
         }
 
         .ttd-area {
-            position: absolute;
-            bottom: 14mm;
-            right: 18mm;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .ttd-box {
             text-align: center;
-            width: 180px;
+            width: 200px;
         }
 
-        .ttd-kota {
+        .ttd-box .kota-tanggal {
             font-size: 10pt;
             color: #333;
+            margin-bottom: 4px;
         }
 
-        .ttd-instansi {
-            font-size: 10pt;
-            color: #333;
-            margin-bottom: 50px; /* ruang tanda tangan kosong */
-        }
-
-        .ttd-nama {
+        .ttd-box .nama-penandatangan {
             font-size: 10pt;
             font-weight: bold;
             border-top: 1px solid #333;
             padding-top: 4px;
+            margin-top: 60px; /* space untuk tanda tangan */
         }
 
-        .ttd-jabatan {
+        .ttd-box .jabatan {
             font-size: 9pt;
             color: #555;
         }
 
-        /* ======================== */
-        /* HALAMAN BELAKANG         */
-        /* ======================== */
+        /* Logo area bawah kiri */
+        .logo-area {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* ===================== */
+        /* HALAMAN BELAKANG      */
+        /* ===================== */
         .halaman-belakang {
-            width: 297mm;
-            height: 210mm;
-            padding: 10mm 14mm;
-            background: #ffffff;
+            width: 290mm;
+            height: 200mm;
+            padding: 3mm 3mm;
+            background: #fffdf5;
+            page-break-after: avoid;
         }
 
         .belakang-judul {
             text-align: center;
-            font-size: 13pt;
+            font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            text-decoration: underline;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
         }
 
-        .info-header {
+        .info-siswa-belakang {
+            font-size: 10pt;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .info-siswa-belakang table {
+            border-collapse: collapse;
+        }
+
+        .info-siswa-belakang td {
+            padding: 2px 6px;
+            font-size: 10pt;
+        }
+
+        .tabel-nilai {
             width: 100%;
             border-collapse: collapse;
             font-size: 10pt;
             margin-bottom: 10px;
         }
 
-        .info-header td {
-            padding: 1px 4px;
-            font-size: 10pt;
-        }
-
-        /* Wrapper 2 kolom tabel nilai */
-        .nilai-wrapper {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-
-        .nilai-col {
-            display: table-cell;
-            vertical-align: top;
-            padding-right: 6mm;
-        }
-
-        .nilai-col:last-child {
-            padding-right: 0;
-        }
-
-        .section-title {
-            font-size: 10pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .tabel-nilai {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 9.5pt;
-            margin-bottom: 6px;
-        }
-
         .tabel-nilai th {
             background-color: #2c5f9e;
             color: white;
-            padding: 4px 6px;
+            padding: 6px 8px;
             text-align: center;
-            font-size: 9pt;
-            border: 1px solid #2c5f9e;
-        }
-
-        .tabel-nilai td {
-            border: 1px solid #bbb;
-            padding: 4px 6px;
             font-size: 9.5pt;
         }
 
-        .row-jumlah td {
-            font-weight: bold;
-            background-color: #f5f5f5;
+        .tabel-nilai td {
+            border: 1px solid #ccc;
+            padding: 5px 8px;
+            font-size: 10pt;
         }
 
-        .row-rata td {
+        .tabel-nilai .jumlah-row td {
             font-weight: bold;
-            background-color: #dce8fb;
+            background-color: #f0f0f0;
         }
 
-        .row-akhir td {
+        .tabel-nilai .rata-row td {
             font-weight: bold;
-            background-color: #d4edda;
+            background-color: #e8f0fe;
+        }
+
+        .tabel-wrapper {
+            display: flex;
+            gap: 12mm;
+        }
+
+        .tabel-wrapper > div {
+            flex: 1;
+        }
+
+        .tabel-section-title {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
         .predikat-table {
             border-collapse: collapse;
             font-size: 9pt;
-            margin-top: 8px;
+            margin-top: 6px;
         }
 
-        .predikat-table th,
-        .predikat-table td {
-            border: 1px solid #bbb;
+        .predikat-table th, .predikat-table td {
+            border: 1px solid #ccc;
             padding: 3px 8px;
             text-align: center;
         }
@@ -235,65 +232,17 @@
         }
 
         .ttd-belakang {
-            text-align: center;
-            width: 180px;
-            float: right;
-            margin-top: 8px;
-        }
-
-        .ttd-belakang .ttd-nama {
-            font-size: 10pt;
-            font-weight: bold;
-            border-top: 1px solid #333;
-            padding-top: 4px;
-            margin-top: 45px;
-        }
-
-        .ttd-belakang .ttd-jabatan {
-            font-size: 9pt;
-            color: #555;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
         }
     </style>
 </head>
 <body>
 
-@php
-    $nilai       = $pkl->nilai;
-    $tglSelesai  = \Carbon\Carbon::parse($pkl->tgl_selesai);
-    $tglMulai    = \Carbon\Carbon::parse($pkl->tgl_mulai);
-
-    $aspekIndustri = [
-        'Soft Skills Dunia Kerja'    => $nilai->aspek_soft_skills ?? 0,
-        'Norma, POS & K3LH'          => $nilai->aspek_norma_k3lh ?? 0,
-        'Kompetensi Teknis'          => $nilai->aspek_kompetensi_teknis ?? 0,
-        'Wawasan Bisnis & Wirausaha' => $nilai->aspek_wawasan_bisnis ?? 0,
-    ];
-
-    $aspekSekolah = [
-        'Penyusunan Laporan PKL' => $nilai->aspek_penyusunan_laporan ?? 0,
-        'Presentasi Hasil PKL'   => $nilai->aspek_presentasi ?? 0,
-    ];
-
-    $totalIndustri = array_sum($aspekIndustri);
-    $rataIndustri  = round($totalIndustri / count($aspekIndustri), 1);
-
-    $totalSekolah = array_sum($aspekSekolah);
-    $rataSekolah  = round($totalSekolah / count($aspekSekolah), 1);
-
-    $allValues = array_merge(array_values($aspekIndustri), array_values($aspekSekolah));
-    $rataAll   = round(array_sum($allValues) / count($allValues), 1);
-
-    function kategori($val) {
-        if ($val >= 86) return 'A';
-        if ($val >= 70) return 'B';
-        if ($val >= 60) return 'C';
-        return 'D';
-    }
-@endphp
-
-{{-- ===================== --}}
-{{-- HALAMAN DEPAN         --}}
-{{-- ===================== --}}
+{{-- ==================== --}}
+{{-- HALAMAN DEPAN        --}}
+{{-- ==================== --}}
 <div class="halaman-depan">
     <div class="judul">Sertifikat</div>
     <div class="sub-judul">Praktik Kerja Lapangan</div>
@@ -310,55 +259,71 @@
     <div class="nama-industri">{{ strtoupper($pkl->industri->nama) }}</div>
 
     <div class="periode">
-        Periode {{ $tglMulai->isoFormat('MMMM Y') }} – {{ $tglSelesai->isoFormat('MMMM Y') }}
+        Periode {{ \Carbon\Carbon::parse($pkl->tgl_mulai)->isoFormat('MMMM') }} - {{ \Carbon\Carbon::parse($pkl->tgl_selesai)->isoFormat('MMMM Y') }}
     </div>
     <div class="catatan-nilai">Dengan Nilai Tercantum Di Belakang Sertifikat Ini.</div>
 
     <div class="ttd-area">
-        <div class="ttd-kota">Pekanbaru, {{ $tglSelesai->isoFormat('D MMMM Y') }}</div>
-        <div class="ttd-instansi">{{ $pkl->industri->nama }}</div>
-        <div class="ttd-nama">{{ $pkl->pembimbingIndustri->nama }}</div>
-        <div class="ttd-jabatan">{{ $pkl->pembimbingIndustri->jabatan }}</div>
+        <div class="ttd-box">
+            <div class="kota-tanggal">Pekanbaru, {{ \Carbon\Carbon::parse($pkl->tgl_selesai)->isoFormat('D MMMM Y') }}</div>
+            <div class="kota-tanggal">{{ $pkl->industri->nama }}</div>
+            {{-- Tanda tangan dikosongkan --}}
+            <div class="nama-penandatangan">{{ $pkl->pembimbingIndustri->nama }}</div>
+            <div class="jabatan">{{ $pkl->pembimbingIndustri->jabatan }}</div>
+        </div>
     </div>
 </div>
 
-{{-- ===================== --}}
-{{-- HALAMAN BELAKANG      --}}
-{{-- ===================== --}}
+{{-- ==================== --}}
+{{-- HALAMAN BELAKANG     --}}
+{{-- ==================== --}}
 <div class="halaman-belakang">
     <div class="belakang-judul">Daftar Nilai Praktik Kerja Lapangan (PKL)</div>
 
-    <table class="info-header">
-        <tr>
-            <td width="130">Nama</td>
-            <td width="5">:</td>
-            <td><strong>{{ $pkl->siswa->nama }}</strong></td>
-            <td width="140">Tempat PKL</td>
-            <td width="5">:</td>
-            <td><strong>{{ $pkl->industri->nama }}</strong></td>
-        </tr>
-        <tr>
-            <td>Nomor Induk Siswa</td>
-            <td>:</td>
-            <td>{{ $pkl->siswa->nisn }}</td>
-            <td>Kompetensi Keahlian</td>
-            <td>:</td>
-            <td>{{ $pkl->siswa->jurusan }}</td>
-        </tr>
-    </table>
+    <div class="info-siswa-belakang">
+        <table>
+            <tr><td>Nama</td><td>: {{ $pkl->siswa->nama }}</td><td style="padding-left:20px">Tempat PKL</td><td>: {{ $pkl->industri->nama }}</td></tr>
+            <tr><td>Nomor Induk Siswa</td><td>: {{ $pkl->siswa->nisn }}</td><td style="padding-left:20px">Kompetensi Keahlian</td><td>: {{ $pkl->siswa->jurusan }}</td></tr>
+        </table>
+    </div>
 
-    <div class="nilai-wrapper">
+    @php
+        $nilai = $pkl->nilai;
 
-        {{-- KOLOM KIRI: PENILAIAN INDUSTRI --}}
-        <div class="nilai-col">
-            <div class="section-title">I. Penilaian Industri</div>
+        // Aspek penilaian (sesuaikan label dengan kebutuhan sekolahmu)
+        $aspekIndustri = [
+            'Soft Skills Dunia Kerja'    => $nilai->aspek_soft_skills ?? 0,
+            'Norma, POS & K3LH'          => $nilai->aspek_norma_k3lh ?? 0,
+            'Kompetensi Teknis'          => $nilai->aspek_kompetensi_teknis ?? 0,
+            'Wawasan Bisnis & Wirausaha' => $nilai->aspek_wawasan_bisnis ?? 0,
+        ];
+
+        $aspekSekolah = [
+            'Penyusunan Laporan PKL'   => $nilai->aspek_penyusunan_laporan ?? 0,
+            'Presentasi Hasil PKL'     => $nilai->aspek_presentasi ?? 0,
+        ];
+
+        $totalIndustri = array_sum($aspekIndustri);
+        $rataIndustri  = count($aspekIndustri) > 0 ? round($totalIndustri / count($aspekIndustri), 1) : 0;
+
+        $totalSekolah = array_sum($aspekSekolah);
+        $rataSekolah  = count($aspekSekolah) > 0 ? round($totalSekolah / count($aspekSekolah), 1) : 0;
+
+        $allValues   = array_merge(array_values($aspekIndustri), array_values($aspekSekolah));
+        $rataAll     = count($allValues) > 0 ? round(array_sum($allValues) / count($allValues), 1) : 0;
+    @endphp
+
+    <div class="tabel-wrapper">
+        {{-- TABEL PENILAIAN INDUSTRI --}}
+        <div>
+            <div class="tabel-section-title">I. Penilaian Industri</div>
             <table class="tabel-nilai">
                 <thead>
                     <tr>
-                        <th width="30">No.</th>
+                        <th>No.</th>
                         <th>Aspek Yang Dinilai</th>
-                        <th width="45">Nilai</th>
-                        <th width="35">Kat.</th>
+                        <th>Nilai</th>
+                        <th>Kat.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -367,33 +332,33 @@
                         <td style="text-align:center">{{ $loop->iteration }}</td>
                         <td>{{ $label }}</td>
                         <td style="text-align:center">{{ $val ?: '-' }}</td>
-                        <td style="text-align:center">{{ $val ? kategori($val) : '-' }}</td>
+                        <td style="text-align:center">{{ $val >= 86 ? 'A' : ($val >= 70 ? 'B' : ($val >= 60 ? 'C' : ($val > 0 ? 'D' : '-'))) }}</td>
                     </tr>
                     @endforeach
-                    <tr class="row-jumlah">
+                    <tr class="jumlah-row">
                         <td colspan="2" style="text-align:right">Jumlah Nilai</td>
                         <td style="text-align:center">{{ $totalIndustri }}</td>
                         <td></td>
                     </tr>
-                    <tr class="row-rata">
+                    <tr class="rata-row">
                         <td colspan="2" style="text-align:right">Rata-rata</td>
                         <td style="text-align:center">{{ $rataIndustri }}</td>
-                        <td style="text-align:center">{{ kategori($rataIndustri) }}</td>
+                        <td style="text-align:center">{{ $rataIndustri >= 86 ? 'A' : ($rataIndustri >= 70 ? 'B' : ($rataIndustri >= 60 ? 'C' : 'D')) }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        {{-- KOLOM KANAN: PENILAIAN SEKOLAH --}}
-        <div class="nilai-col">
-            <div class="section-title">II. Penilaian Sekolah</div>
+        {{-- TABEL PENILAIAN SEKOLAH --}}
+        <div>
+            <div class="tabel-section-title">II. Penilaian Sekolah</div>
             <table class="tabel-nilai">
                 <thead>
                     <tr>
-                        <th width="30">No.</th>
+                        <th>No.</th>
                         <th>Aspek Yang Dinilai</th>
-                        <th width="45">Nilai</th>
-                        <th width="35">Kat.</th>
+                        <th>Nilai</th>
+                        <th>Kat.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -402,52 +367,51 @@
                         <td style="text-align:center">{{ $loop->iteration }}</td>
                         <td>{{ $label }}</td>
                         <td style="text-align:center">{{ $val ?: '-' }}</td>
-                        <td style="text-align:center">{{ $val ? kategori($val) : '-' }}</td>
+                        <td style="text-align:center">{{ $val >= 86 ? 'A' : ($val >= 70 ? 'B' : ($val >= 60 ? 'C' : ($val > 0 ? 'D' : '-'))) }}</td>
                     </tr>
                     @endforeach
-                    <tr class="row-jumlah">
+                    <tr class="jumlah-row">
                         <td colspan="2" style="text-align:right">Jumlah Nilai</td>
                         <td style="text-align:center">{{ $totalSekolah }}</td>
                         <td></td>
                     </tr>
-                    <tr class="row-rata">
+                    <tr class="rata-row">
                         <td colspan="2" style="text-align:right">Rata-rata</td>
                         <td style="text-align:center">{{ $rataSekolah }}</td>
-                        <td style="text-align:center">{{ kategori($rataSekolah) }}</td>
+                        <td style="text-align:center">{{ $rataSekolah >= 86 ? 'A' : ($rataSekolah >= 70 ? 'B' : ($rataSekolah >= 60 ? 'C' : 'D')) }}</td>
                     </tr>
                 </tbody>
             </table>
 
-            {{-- NILAI AKHIR --}}
-            <table class="tabel-nilai">
-                <tr class="row-akhir">
-                    <td colspan="2" style="text-align:right; font-weight:bold">NILAI AKHIR</td>
+            {{-- RATA-RATA AKHIR --}}
+            <table class="tabel-nilai" style="margin-top:8px">
+                <tr class="rata-row">
+                    <td colspan="2" style="text-align:right; font-weight:bold">NILAI AKHIR (Rata-rata)</td>
                     <td style="text-align:center; font-weight:bold">{{ $rataAll }}</td>
-                    <td style="text-align:center; font-weight:bold">{{ kategori($rataAll) }}</td>
+                    <td style="text-align:center; font-weight:bold">{{ $rataAll >= 86 ? 'A' : ($rataAll >= 70 ? 'B' : ($rataAll >= 60 ? 'C' : 'D')) }}</td>
                 </tr>
             </table>
 
             {{-- PREDIKAT --}}
-            <table class="predikat-table">
-                <tr>
-                    <th>Nilai</th><th>Kategori</th><th>Keterangan</th>
-                </tr>
+            <table class="predikat-table" style="margin-top:10px">
+                <tr><th>Nilai</th><th>Kategori</th><th>Keterangan</th></tr>
                 <tr><td>86 - 100</td><td>A</td><td>Baik Sekali</td></tr>
                 <tr><td>70 - 85</td><td>B</td><td>Baik</td></tr>
                 <tr><td>60 - 69</td><td>C</td><td>Cukup</td></tr>
                 <tr><td>50 - 59</td><td>D</td><td>Kurang</td></tr>
             </table>
-
-            {{-- TTD BELAKANG --}}
-            <div class="ttd-belakang">
-                <div class="ttd-kota">Pekanbaru, {{ $tglSelesai->isoFormat('D MMMM Y') }}</div>
-                <div style="font-size:10pt">Pembimbing PKL</div>
-                <div class="ttd-nama">{{ $pkl->pembimbingIndustri->nama }}</div>
-                <div class="ttd-jabatan">{{ $pkl->pembimbingIndustri->jabatan }}</div>
-            </div>
         </div>
+    </div>
 
-    </div>{{-- end nilai-wrapper --}}
+    {{-- TTD BELAKANG --}}
+    <div class="ttd-belakang">
+        <div class="ttd-box">
+            <div class="kota-tanggal">Pekanbaru, {{ \Carbon\Carbon::parse($pkl->tgl_selesai)->isoFormat('D MMMM Y') }}</div>
+            <div class="kota-tanggal">Pembimbing PKL</div>
+            <div class="nama-penandatangan">{{ $pkl->pembimbingIndustri->nama }}</div>
+            <div class="jabatan">{{ $pkl->pembimbingIndustri->jabatan }}</div>
+        </div>
+    </div>
 </div>
 
 </body>
