@@ -68,7 +68,7 @@
                         <div class="space-y-2">
                             <div class="flex items-center justify-between ml-1">
                                 <label class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Foto Dokumentasi</label>
-                                <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">Opsional</span>
+                                <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase">wajib</span>
                             </div>
 
                             <div class="relative group">
