@@ -144,7 +144,7 @@
         // ─── Data dari server ───────────────────────────────────────────
         const destLat = {{ (float) ($pkl->industri->latitude ?? 0) }};
         const destLng = {{ (float) ($pkl->industri->longitude ?? 0) }};
-        const radiusMaks = 50;
+        const radiusMaks = 200;
 
         // Guard jika koordinat belum diisi admin
         if (destLat === 0 || destLng === 0) {

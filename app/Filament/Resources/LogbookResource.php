@@ -13,8 +13,8 @@ class LogbookResource extends Resource
 {
     protected static ?string $model = Logbook::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+     protected static ?string $pluralModelLabel = 'Data Logbook';
     public static function form(Form $form): Form
     {
         return $form

@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
                 'siswa' => $siswa,
             ]);
         });
+        Route::post('/pengajuan/lengkapi-profil', [App\Http\Controllers\PengajuanController::class, 'updateProfilLengkap']);
         Route::get('/pengajuan/form_pengajuan', [PengajuanController::class, 'index']);
         Route::post('/pengajuan/store', [PengajuanController::class, 'store'])->name('pengajuan.store');
         Route::delete('/pengajuan/reset', [PengajuanController::class, 'reset'])->name('pengajuan.reset');

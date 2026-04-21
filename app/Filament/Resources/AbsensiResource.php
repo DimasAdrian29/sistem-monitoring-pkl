@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AbsensiResource\Pages;
@@ -14,8 +13,8 @@ class AbsensiResource extends Resource
 {
     protected static ?string $model = Absensi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon   = 'heroicon-o-rectangle-stack';
+    protected static ?string $pluralModelLabel = 'Absensi';
     public static function form(Form $form): Form
     {
         return $form
@@ -61,9 +60,9 @@ class AbsensiResource extends Resource
                         // Penambahan Field Foto (Opsional)
                         Forms\Components\FileUpload::make('foto')
                             ->label('Foto Bukti Absensi')
-                            ->image() // Hanya menerima file gambar
+                            ->image()                   // Hanya menerima file gambar
                             ->directory('absensi-foto') // Folder penyimpanan di storage/app/public
-                            ->columnSpanFull(), // Agar tampilan lebih lebar
+                            ->columnSpanFull(),         // Agar tampilan lebih lebar
 
                         Forms\Components\Select::make('status_validasi')
                             ->options([
@@ -99,10 +98,10 @@ class AbsensiResource extends Resource
                 Tables\Columns\TextColumn::make('status_validasi') // Menggunakan TextColumn dengan badge() karena BadgeColumn sudah deprecated di versi terbaru
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'Menunggu' => 'warning',
+                        'Menunggu'  => 'warning',
                         'Disetujui' => 'success',
-                        'Ditolak' => 'danger',
-                        default => 'gray',
+                        'Ditolak'   => 'danger',
+                        default     => 'gray',
                     }),
             ])
             ->actions([

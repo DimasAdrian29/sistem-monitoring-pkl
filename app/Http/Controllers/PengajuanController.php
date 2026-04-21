@@ -58,7 +58,6 @@ class PengajuanController extends Controller
 
         return back();
     }
-    // Tambahkan ini di App\Http\Controllers\PengajuanController.php
 
     public function informasi(Request $request)
     {
@@ -72,4 +71,33 @@ class PengajuanController extends Controller
 
         return view('pengajuan.informasi_pkl', compact('industris'));
     }
+
+    // --- AWAL TAMBAHAN FUNGSI UNTUK MENYIMPAN DATA DARI POP-UP ---
+    public function updateProfilLengkap(Request $request)
+    {
+        $request->validate([
+            'jenis_kelamin'      => 'required|string',
+            'agama'              => 'required|string',
+            'alamat'             => 'required|string',
+            'nomor_telepon'      => 'required|string|max:20',
+            'nomor_telepon_wali' => 'required|string|max:20',
+        ]);
+
+        $siswa = Siswa::where('user_id', Auth::id())->first();
+
+        if ($siswa) {
+            $siswa->update([
+                'jenis_kelamin'      => $request->jenis_kelamin,
+                'agama'              => $request->agama,
+                'alamat'             => $request->alamat,
+                'nomor_telepon'      => $request->nomor_telepon,
+                'nomor_telepon_wali' => $request->nomor_telepon_wali,
+            ]);
+
+            return back()->with('success', 'Profil Anda berhasil dilengkapi!');
+        }
+
+        return back()->with('error', 'Gagal melengkapi data, siswa tidak ditemukan.');
+    }
+    // --- AKHIR TAMBAHAN FUNGSI ---
 }

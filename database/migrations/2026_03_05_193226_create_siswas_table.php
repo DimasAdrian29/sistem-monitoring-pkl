@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('siswas', function (Blueprint $table) {
-            $table->id(); // Menggunakan default primary key
+            $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('nama');
-            $table->string('nisn')->unique(); // Digunakan juga sebagai NIK/Username
-            $table->string('jenis_kelamin');
+            $table->string('nisn')->unique();
+
+            // Tambahkan ->nullable() di sini
+            $table->string('jenis_kelamin')->nullable();
+
             $table->string('agama')->nullable();
             $table->text('alamat')->nullable();
             $table->string('kelas');

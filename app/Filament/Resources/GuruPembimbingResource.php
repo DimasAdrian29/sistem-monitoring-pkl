@@ -15,7 +15,7 @@ class GuruPembimbingResource extends Resource
     protected static ?string $model = GuruPembimbing::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-
+     protected static ?string $pluralModelLabel = 'Data Guru Pembimbing';
     public static function form(Form $form): Form
     {
         return $form

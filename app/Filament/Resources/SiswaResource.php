@@ -1,7 +1,8 @@
 <?php
+
 namespace App\Filament\Resources;
 
-use App\Filament\Imports\SiswaImporter; // Import class Importer yang baru dibuat
+use App\Filament\Imports\SiswaImporter;
 use App\Filament\Resources\SiswaResource\Pages;
 use App\Models\Siswa;
 use Filament\Forms;
@@ -9,34 +10,46 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class SiswaResource extends Resource
 {
     protected static ?string $model = Siswa::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+    protected static ?string $navigationLabel = 'Data Siswa';
+
+    protected static ?string $modelLabel = 'Siswa';
+
+    protected static ?string $pluralModelLabel = 'Data Siswa';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                // Bagian Data Pribadi
                 Forms\Components\Section::make('Data Pribadi Siswa')
                     ->schema([
                         Forms\Components\TextInput::make('nama')
                             ->required()
                             ->maxLength(255),
+
                         Forms\Components\TextInput::make('nisn')
-                            ->label('NISN / NIK (Digunakan untuk Username login)')
+                            ->label('NISN (Username)')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
+
+                        // Jenis Kelamin dibuat Nullable (Boleh Kosong)
                         Forms\Components\Select::make('jenis_kelamin')
+                            ->label('Jenis Kelamin')
                             ->options([
                                 'Laki-laki' => 'Laki-laki',
                                 'Perempuan' => 'Perempuan',
-                            ])->required(),
+                            ])
+                            ->nullable(), // Tidak menggunakan ->required()
 
-                        // Agama dibuat Nullable (Opsional)
                         Forms\Components\Select::make('agama')
                             ->options([
                                 'Islam'   => 'Islam',
@@ -45,7 +58,8 @@ class SiswaResource extends Resource
                                 'Hindu'   => 'Hindu',
                                 'Buddha'  => 'Buddha',
                                 'Konghucu'=> 'Konghucu',
-                            ]),
+                            ])
+                            ->nullable(),
 
                         Forms\Components\Select::make('kelas')
                             ->options([
@@ -72,27 +86,29 @@ class SiswaResource extends Resource
                             ->searchable()
                             ->required(),
 
-                        // Nomor telepon dibuat Nullable (Opsional)
                         Forms\Components\TextInput::make('nomor_telepon')
-                            ->tel(),
+                            ->label('No. Telepon Siswa')
+                            ->tel()
+                            ->nullable(),
 
-                        // Nomor telepon wali dibuat Nullable (Opsional)
                         Forms\Components\TextInput::make('nomor_telepon_wali')
-                            ->tel(),
+                            ->label('No. Telepon Wali')
+                            ->tel()
+                            ->nullable(),
 
-                        // Alamat dibuat Nullable (Opsional)
                         Forms\Components\Textarea::make('alamat')
-                            ->columnSpanFull(),
-
+                            ->columnSpanFull()
+                            ->nullable(),
                     ])->columns(2),
 
+                // Bagian Manajemen Akun (Hanya muncul saat Edit)
                 Forms\Components\Section::make('Manajemen Akun')
                     ->description('Reset password siswa jika lupa. Kosongkan jika tidak ingin diubah.')
                     ->schema([
                         Forms\Components\TextInput::make('password')
                             ->password()
                             ->label('Password Baru')
-                            ->dehydrated(false)
+                            ->dehydrated(fn ($state) => filled($state)) // Hanya kirim data jika diisi
                             ->revealable(),
                     ])
                     ->hiddenOn('create'),
@@ -103,12 +119,27 @@ class SiswaResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nisn')->label('NISN/NIK')->searchable(),
-                Tables\Columns\TextColumn::make('nama')->searchable(),
-                Tables\Columns\TextColumn::make('kelas')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('jurusan')->searchable(),
+                Tables\Columns\TextColumn::make('nisn')
+                    ->label('NISN/NIK')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('nama')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('kelas')
+                    ->badge()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('jurusan')
+                    ->searchable()
+                    ->wrap(), // Membungkus teks jika terlalu panjang
+
                 Tables\Columns\TextColumn::make('nomor_telepon')
-                    ->placeholder('Belum diisi'), // Menampilkan teks jika null
+                    ->label('Telepon')
+                    ->placeholder('Belum diisi'),
+
                 Tables\Columns\TextColumn::make('user.username')
                     ->label('Username Login')
                     ->badge()
@@ -129,16 +160,21 @@ class SiswaResource extends Resource
                         'Teknik Komputer dan Jaringan' => 'Teknik Komputer dan Jaringan',
                         'Desain Komunikasi Visual' => 'Desain Komunikasi Visual',
                     ]),
+                Tables\Filters\SelectFilter::make('kelas')
+                    ->options([
+                        'XI' => 'Kelas XI',
+                        'XII' => 'Kelas XII',
+                        'XIII' => 'Kelas XIII',
+                    ]),
             ])
-            // --- BAGIAN INI DITAMBAHKAN UNTUK TOMBOL IMPORT CSV ---
             ->headerActions([
+                // Tombol Import CSV
                 Tables\Actions\ImportAction::make()
                     ->importer(SiswaImporter::class)
                     ->label('Import Siswa')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary'),
             ])
-            // --------------------------------------------------------
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

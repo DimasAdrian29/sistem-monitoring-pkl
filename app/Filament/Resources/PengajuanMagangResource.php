@@ -15,7 +15,7 @@ class PengajuanMagangResource extends Resource
     protected static ?string $model = PengajuanMagang::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text'; // Bisa disesuaikan
-
+     protected static ?string $pluralModelLabel = 'Pengajuan Magang';
     public static function form(Form $form): Form
     {
         return $form

@@ -15,7 +15,7 @@ class PembimbingIndustriResource extends Resource
     protected static ?string $model = PembimbingIndustri::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
+     protected static ?string $pluralModelLabel = 'Data Pembimbing industri';
     public static function form(Form $form): Form
     {
         return $form

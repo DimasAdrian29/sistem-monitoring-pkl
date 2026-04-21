@@ -20,7 +20,7 @@ class PraktekKerjaLapanganResource extends Resource
     protected static ?string $model = PraktekKerjaLapangan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $pluralModelLabel = 'Praktek Kerja Lapangan';
     public static function form(Form $form): Form
     {
         return $form

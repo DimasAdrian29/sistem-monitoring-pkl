@@ -15,8 +15,8 @@ class IndustriResource extends Resource
 {
     protected static ?string $model = Industri::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+     protected static ?string $pluralModelLabel = 'Data Industri';
     public static function form(Form $form): Form
     {
         return $form
