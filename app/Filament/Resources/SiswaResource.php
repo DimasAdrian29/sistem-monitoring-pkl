@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources;
 
 use App\Filament\Imports\SiswaImporter;
@@ -10,7 +9,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
 
 class SiswaResource extends Resource
 {
@@ -52,37 +50,37 @@ class SiswaResource extends Resource
 
                         Forms\Components\Select::make('agama')
                             ->options([
-                                'Islam'   => 'Islam',
-                                'Kristen' => 'Kristen',
-                                'Katolik' => 'Katolik',
-                                'Hindu'   => 'Hindu',
-                                'Buddha'  => 'Buddha',
-                                'Konghucu'=> 'Konghucu',
+                                'Islam'    => 'Islam',
+                                'Kristen'  => 'Kristen',
+                                'Katolik'  => 'Katolik',
+                                'Hindu'    => 'Hindu',
+                                'Buddha'   => 'Buddha',
+                                'Konghucu' => 'Konghucu',
                             ])
                             ->nullable(),
 
                         Forms\Components\Select::make('kelas')
                             ->options([
-                                'XI' => 'Kelas XI',
-                                'XII' => 'Kelas XII',
+                                'XI'   => 'Kelas XI',
+                                'XII'  => 'Kelas XII',
                                 'XIII' => 'Kelas XIII',
                             ])
                             ->required(),
 
                         Forms\Components\Select::make('jurusan')
                             ->options([
-                                'Teknik Konstruksi dan Perumahan' => 'Teknik Konstruksi dan Perumahan',
-                                'Desain Pemodelan dan Informasi Bangunan' => 'Desain Pemodelan dan Informasi Bangunan',
-                                'Teknik Pemesinan' => 'Teknik Pemesinan',
-                                'Teknik Kendaraan Ringan' => 'Teknik Kendaraan Ringan',
-                                'Teknik Sepeda Motor' => 'Teknik Sepeda Motor',
-                                'Teknik Audio Video' => 'Teknik Audio Video',
-                                'Teknik Instalasi Tenaga Listrik' => 'Teknik Instalasi Tenaga Listrik',
+                                'Teknik Konstruksi dan Perumahan'              => 'Teknik Konstruksi dan Perumahan',
+                                'Desain Pemodelan dan Informasi Bangunan'      => 'Desain Pemodelan dan Informasi Bangunan',
+                                'Teknik Pemesinan'                             => 'Teknik Pemesinan',
+                                'Teknik Kendaraan Ringan'                      => 'Teknik Kendaraan Ringan',
+                                'Teknik Sepeda Motor'                          => 'Teknik Sepeda Motor',
+                                'Teknik Audio Video'                           => 'Teknik Audio Video',
+                                'Teknik Instalasi Tenaga Listrik'              => 'Teknik Instalasi Tenaga Listrik',
                                 'Teknik Pemanasan, Tata Udara dan Pendinginan' => 'Teknik Pemanasan, Tata Udara dan Pendinginan',
-                                'Teknik Geologi Pertambangan (4Tahun)' => 'Teknik Geologi Pertambangan (4Tahun)',
-                                'Teknik Komputer dan Jaringan 1' => 'Teknik Komputer dan Jaringan 1',
-                                'Teknik Komputer dan Jaringan 2' => 'Teknik Komputer dan Jaringan 2',
-                                'Desain Komunikasi Visual' => 'Desain Komunikasi Visual',
+                                'Teknik Geologi Pertambangan (4Tahun)'         => 'Teknik Geologi Pertambangan (4Tahun)',
+                                'Teknik Komputer dan Jaringan 1'               => 'Teknik Komputer dan Jaringan 1',
+                                'Teknik Komputer dan Jaringan 2'               => 'Teknik Komputer dan Jaringan 2',
+                                'Desain Komunikasi Visual'                     => 'Desain Komunikasi Visual',
                             ])
                             ->searchable()
                             ->required(),
@@ -109,7 +107,7 @@ class SiswaResource extends Resource
                         Forms\Components\TextInput::make('password')
                             ->password()
                             ->label('Password Baru')
-                            ->dehydrated(fn ($state) => filled($state)) // Hanya kirim data jika diisi
+                            ->dehydrated(fn($state) => filled($state)) // Hanya kirim data jika diisi
                             ->revealable(),
                     ])
                     ->hiddenOn('create'),
@@ -149,22 +147,23 @@ class SiswaResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('jurusan')
                     ->options([
-                        'Teknik Konstruksi dan Perumahan' => 'Teknik Konstruksi dan Perumahan',
-                        'Desain Pemodelan dan Informasi Bangunan' => 'Desain Pemodelan dan Informasi Bangunan',
-                        'Teknik Pemesinan' => 'Teknik Pemesinan',
-                        'Teknik Kendaraan Ringan' => 'Teknik Kendaraan Ringan',
-                        'Teknik Sepeda Motor' => 'Teknik Sepeda Motor',
-                        'Teknik Audio Video' => 'Teknik Audio Video',
-                        'Teknik Instalasi Tenaga Listrik' => 'Teknik Instalasi Tenaga Listrik',
+                        'Teknik Konstruksi dan Perumahan'              => 'Teknik Konstruksi dan Perumahan',
+                        'Desain Pemodelan dan Informasi Bangunan'      => 'Desain Pemodelan dan Informasi Bangunan',
+                        'Teknik Pemesinan'                             => 'Teknik Pemesinan',
+                        'Teknik Kendaraan Ringan'                      => 'Teknik Kendaraan Ringan',
+                        'Teknik Sepeda Motor'                          => 'Teknik Sepeda Motor',
+                        'Teknik Audio Video'                           => 'Teknik Audio Video',
+                        'Teknik Instalasi Tenaga Listrik'              => 'Teknik Instalasi Tenaga Listrik',
                         'Teknik Pemanasan, Tata Udara dan Pendinginan' => 'Teknik Pemanasan, Tata Udara dan Pendinginan',
-                        'Teknik Geologi Pertambangan (4Tahun)' => 'Teknik Geologi Pertambangan (4Tahun)',
-                        'Teknik Komputer dan Jaringan' => 'Teknik Komputer dan Jaringan',
-                        'Desain Komunikasi Visual' => 'Desain Komunikasi Visual',
+                        'Teknik Geologi Pertambangan (4Tahun)'         => 'Teknik Geologi Pertambangan (4Tahun)',
+                        'Teknik Komputer dan Jaringan 1'               => 'Teknik Komputer dan Jaringan 1',
+                        'Teknik Komputer dan Jaringan 2'               => 'Teknik Komputer dan Jaringan 2',
+                        'Desain Komunikasi Visual'                     => 'Desain Komunikasi Visual',
                     ]),
                 Tables\Filters\SelectFilter::make('kelas')
                     ->options([
-                        'XI' => 'Kelas XI',
-                        'XII' => 'Kelas XII',
+                        'XI'   => 'Kelas XI',
+                        'XII'  => 'Kelas XII',
                         'XIII' => 'Kelas XIII',
                     ]),
             ])
