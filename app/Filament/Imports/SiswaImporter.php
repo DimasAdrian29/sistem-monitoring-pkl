@@ -25,7 +25,7 @@ class SiswaImporter extends Importer
                 ->rules(['required', 'max:255']),
             ImportColumn::make('jenis_kelamin')
                 ->requiredMapping()
-                ->rules(['required']),
+                ->rules(['nullable']),
             ImportColumn::make('agama'),
             ImportColumn::make('kelas')
                 ->requiredMapping()
