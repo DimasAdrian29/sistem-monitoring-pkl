@@ -54,7 +54,6 @@ class SiswaImporter extends Importer
         $user = User::firstOrCreate(
             ['username' => $this->data['nisn']], // Cari user berdasarkan username (NISN)
             [
-                'name' => $this->data['nama'],
                 'password' => bcrypt($this->data['nisn']), // Password default disamakan dengan NISN
             ]
         );
