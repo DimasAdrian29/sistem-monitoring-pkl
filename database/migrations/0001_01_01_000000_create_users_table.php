@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
            $table->string('username')->unique();
             $table->string('password');
-            $table->string('gmail')->unique();
-            $table->string('role');
+            $table->string('gmail')->nullable();
+            $table->string('role')->default('siswa');
             $table->rememberToken(); // Saya sarankan tetap dibiarkan untuk fitur "Remember Me" saat login
             $table->timestamps();
         });
