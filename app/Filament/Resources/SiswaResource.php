@@ -80,7 +80,8 @@ class SiswaResource extends Resource
                                 'Teknik Instalasi Tenaga Listrik' => 'Teknik Instalasi Tenaga Listrik',
                                 'Teknik Pemanasan, Tata Udara dan Pendinginan' => 'Teknik Pemanasan, Tata Udara dan Pendinginan',
                                 'Teknik Geologi Pertambangan (4Tahun)' => 'Teknik Geologi Pertambangan (4Tahun)',
-                                'Teknik Komputer dan Jaringan' => 'Teknik Komputer dan Jaringan',
+                                'Teknik Komputer dan Jaringan 1' => 'Teknik Komputer dan Jaringan 1',
+                                'Teknik Komputer dan Jaringan 2' => 'Teknik Komputer dan Jaringan 2',
                                 'Desain Komunikasi Visual' => 'Desain Komunikasi Visual',
                             ])
                             ->searchable()
