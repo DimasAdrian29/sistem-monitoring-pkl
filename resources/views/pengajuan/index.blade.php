@@ -134,6 +134,13 @@
                     @csrf
                     <div class="p-6 space-y-5 max-h-[55vh] overflow-y-auto">
 
+                        {{-- Nama Lengkap (Readonly) --}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap</label>
+                            <input type="text" value="{{ $siswa->nama }}" readonly class="w-full rounded-xl border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-sm sm:text-sm">
+                            <p class="text-[10px] text-gray-400 mt-1">*Nama lengkap tidak dapat diubah</p>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             {{-- Jenis Kelamin --}}
                             <div>
@@ -180,7 +187,7 @@
 
                     {{-- Modal Footer --}}
                     <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 rounded-b-3xl flex justify-end gap-3">
-                        
+
                         <button type="submit" class="px-5 py-2.5 text-sm font-medium text-white bg-[#0d6efd] hover:bg-[#0a58ca] rounded-xl shadow-lg shadow-blue-500/30 transition-colors">
                             Simpan Data
                         </button>
