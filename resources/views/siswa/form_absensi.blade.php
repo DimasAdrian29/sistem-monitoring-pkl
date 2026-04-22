@@ -41,7 +41,7 @@
                 </div>
 
                 {{-- Form --}}
-                <form id="absensiForm" action="{{ route('siswa.absensi.store') }}" method="POST" class="space-y-5">
+                <form id="absensiForm" action="{{ route('siswa.absensi.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
                     <input type="hidden" name="latitude" id="lat-input">
                     <input type="hidden" name="longitude" id="lng-input">
@@ -65,8 +65,8 @@
                         </div>
 
                         <div id="buktiIzinContainer" class="space-y-2 hidden">
-                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Unggah Bukti</label>
-                            <input type="file" name="bukti"
+                            <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Unggah Bukti (Hanya JPG/PNG)</label>
+                            <input type="file" name="bukti" id="buktiInput" accept="image/jpeg, image/png, image/jpg"
                                 class="block w-full text-xs text-slate-500
                                           file:mr-2 file:py-2 file:px-4 file:rounded-xl
                                           file:border-0 file:text-xs file:font-bold
@@ -229,7 +229,7 @@
                         .replace('cursor-not-allowed', '') + ' bg-green-600';
                     btnTxt.innerText = 'Kirim Presensi';
                 } else {
-                    locText.innerHTML = '❌ Di luar radius — jarak ' + jarakMeter + ' m (maks 50 m)';
+                    locText.innerHTML = '❌ Di luar radius — jarak ' + jarakMeter + ' m (maks ' + radiusMaks + ' m)';
                     locText.className = 'text-xs font-bold text-red-500';
                     btn.disabled = true;
                     btn.className = btn.className
@@ -333,12 +333,35 @@
                 getLocation();
             }
         });
+
+        // ─── Event: Validasi Upload Bukti Foto (JPG/PNG) ────────────────
+        document.getElementById('buktiInput').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+                if (!validTypes.includes(file.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Tidak Valid',
+                        text: 'Bukti harus berupa foto dengan format JPG atau PNG!',
+                        confirmButtonText: 'Pilih Ulang',
+                        confirmButtonColor: '#3b82f6',
+                        customClass: {
+                            confirmButton: 'rounded-xl px-6 py-2'
+                        }
+                    });
+                    this.value = ''; // Reset input agar user harus mengupload ulang
+                }
+            }
+        });
+
         // ─── Loading saat Submit ────────────────────────────────────
         document.getElementById('absensiForm').addEventListener('submit', function() {
             const overlay = document.getElementById('loadingOverlay');
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
         });
+
         // ─── Boot ───────────────────────────────────────────────────────
         // Leaflet butuh container sudah ter-render. Tunggu DOMContentLoaded.
         document.addEventListener('DOMContentLoaded', function() {

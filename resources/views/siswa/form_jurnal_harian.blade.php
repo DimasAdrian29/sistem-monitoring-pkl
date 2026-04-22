@@ -72,13 +72,14 @@
                             </div>
 
                             <div class="relative group">
-                                <input type="file" name="foto" id="doc-upload" class="hidden" accept="image/*" onchange="previewFileName(this)">
+                                {{-- Tambahkan atribut required dan accept jpg/png di sini --}}
+                                <input type="file" name="foto" id="doc-upload" class="hidden" accept="image/jpeg, image/png, image/jpg" required onchange="previewFileName(this)">
                                 <label for="doc-upload" id="drop-area" class="flex flex-col items-center justify-center w-full py-10 border-2 border-dashed border-slate-200 dark:border-gray-600 rounded-2xl bg-slate-50 dark:bg-gray-700/30 hover:bg-primary/5 hover:border-primary/50 transition-all cursor-pointer">
                                     <div id="icon-placeholder" class="h-14 w-14 flex items-center justify-center rounded-full bg-white dark:bg-gray-700 text-primary shadow-sm mb-3 group-hover:scale-110 transition-transform">
                                         <span class="material-symbols-outlined text-3xl">add_a_photo</span>
                                     </div>
                                     <p id="file-name" class="text-sm font-bold text-slate-700 dark:text-slate-200 text-center px-4">Unggah Foto Kegiatan</p>
-                                    <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-tight">Tap untuk mengambil foto atau pilih file</p>
+                                    <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-tight">Hanya format JPG / PNG</p>
                                 </label>
                             </div>
                             @error('foto')
@@ -104,6 +105,9 @@
 
     </div>
 
+    {{-- SweetAlert2 CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         const form = document.getElementById('jurnalForm');
         const overlay = document.getElementById('loading-overlay');
@@ -127,19 +131,54 @@
         });
 
         /**
-         * Fungsi untuk memperbarui tampilan nama file setelah dipilih
+         * Fungsi untuk memperbarui tampilan nama file setelah dipilih & Validasi Ekstensi
          */
         function previewFileName(input) {
-            if (input.files && input.files[0]) {
-                const fileName = input.files[0].name;
-                const label = document.getElementById('file-name');
-                const iconContainer = document.getElementById('icon-placeholder');
-                const dropArea = document.getElementById('drop-area');
+            const label = document.getElementById('file-name');
+            const iconContainer = document.getElementById('icon-placeholder');
+            const dropArea = document.getElementById('drop-area');
 
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+                // Validasi tipe file
+                if (!validTypes.includes(file.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Tidak Sesuai',
+                        text: 'Foto dokumentasi harus berupa file JPG atau PNG!',
+                        confirmButtonText: 'Pilih Ulang Foto',
+                        confirmButtonColor: '#3b82f6',
+                        customClass: {
+                            confirmButton: 'rounded-xl px-6 py-2'
+                        }
+                    });
+
+                    // Reset Input value
+                    input.value = '';
+
+                    // Reset UI ke state awal
+                    label.innerText = "Unggah Foto Kegiatan";
+                    label.classList.remove('text-primary');
+                    iconContainer.innerHTML = '<span class="material-symbols-outlined text-3xl">add_a_photo</span>';
+                    dropArea.classList.remove('border-primary/50', 'bg-primary/5');
+
+                    return; // Hentikan eksekusi jika file salah
+                }
+
+                // Jika file benar (JPG / PNG), ubah UI
+                const fileName = file.name;
                 label.innerText = "File: " + fileName;
                 label.classList.add('text-primary');
                 iconContainer.innerHTML = '<span class="material-symbols-outlined text-3xl text-green-500">check_circle</span>';
                 dropArea.classList.add('border-primary/50', 'bg-primary/5');
+            } else {
+                // Reset UI jika user batal memilih file
+                label.innerText = "Unggah Foto Kegiatan";
+                label.classList.remove('text-primary');
+                iconContainer.innerHTML = '<span class="material-symbols-outlined text-3xl">add_a_photo</span>';
+                dropArea.classList.remove('border-primary/50', 'bg-primary/5');
             }
         }
     </script>

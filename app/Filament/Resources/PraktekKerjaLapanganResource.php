@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PraktekKerjaLapanganResource\Pages;
 use App\Models\PengajuanMagang;
 use App\Models\PraktekKerjaLapangan;
-use App\Models\Siswa; // Pastikan model Siswa di-import
+use App\Models\Siswa;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -21,6 +21,7 @@ class PraktekKerjaLapanganResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $pluralModelLabel = 'Praktek Kerja Lapangan';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -32,7 +33,19 @@ class PraktekKerjaLapanganResource extends Resource
                             ->relationship(
                                 name: 'siswa',
                                 titleAttribute: 'nama',
-                                modifyQueryUsing: fn(Builder $query) => $query->whereIn('id', PengajuanMagang::where('status_pengajuan', 'Diterima')->select('siswa_id'))
+                                modifyQueryUsing: function (Builder $query, ?PraktekKerjaLapangan $record) {
+                                    // 1. Ambil siswa yang pengajuannya sudah Diterima
+                                    $query->whereIn('id', PengajuanMagang::where('status_pengajuan', 'Diterima')->select('siswa_id'));
+
+                                    // 2. Filter agar siswa yang sudah masuk ke Praktek Kerja Lapangan tidak muncul lagi
+                                    if ($record) {
+                                        // Mode EDIT: Sembunyikan semua siswa yang sudah di PKL, KECUALI siswa pada record yang sedang diedit ini
+                                        $query->whereNotIn('id', PraktekKerjaLapangan::where('id', '!=', $record->id)->select('siswa_id'));
+                                    } else {
+                                        // Mode CREATE: Sembunyikan semua siswa yang sudah terdaftar di PKL
+                                        $query->whereNotIn('id', PraktekKerjaLapangan::select('siswa_id'));
+                                    }
+                                }
                             )
                             ->getOptionLabelFromRecordUsing(fn($record) => "{$record->nama} - {$record->kelas} - {$record->jurusan}")
                             ->searchable()

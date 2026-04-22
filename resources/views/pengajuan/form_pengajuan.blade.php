@@ -95,7 +95,7 @@
                                     <span class="material-symbols-outlined text-primary text-xl">upload_file</span>
                                     <h3 class="text-slate-900 dark:text-white font-bold text-base">Unggah Berkas (CV)</h3>
                                 </div>
-                                <input type="file" name="cv" required accept=".pdf"
+                                <input type="file" name="cv" required accept=".pdf" id="cvUpload"
                                     class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20">
                             </div>
                         </div>
@@ -145,7 +145,6 @@
                                 </p>
                             </div>
 
-                            {{-- Tombol Dashboard kita ganti menjadi tombol status "Menunggu" atau bisa diarahkan ke info kontak Humas --}}
                             <div
                                 class="w-full flex items-center justify-center gap-3 rounded-2xl bg-slate-100 dark:bg-gray-700 py-4 text-sm font-bold text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-gray-600">
                                 <span class="material-symbols-outlined text-lg animate-pulse">hourglass_empty</span>
@@ -172,4 +171,35 @@
             </div>
         </main>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('cvUpload');
+
+            if (fileInput) {
+                fileInput.addEventListener('change', function(e) {
+                    const file = this.files[0];
+                    if (file) {
+                        // Memastikan file bertipe PDF
+                        if (file.type !== 'application/pdf') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Format Tidak Sesuai',
+                                text: 'File yang diunggah harus berupa PDF!',
+                                confirmButtonText: 'Pilih Ulang File',
+                                confirmButtonColor: '#3085d6',
+                                customClass: {
+                                    confirmButton: 'rounded-xl px-6 py-2'
+                                }
+                            });
+
+                            this.value = ''; // Reset form input file agar user harus memasukkan ulang
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 @endsection
